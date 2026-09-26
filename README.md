@@ -40,14 +40,48 @@ lasted. That shapes the whole approach here:
 
 1. **Data prep** - clean the shortage and recall snapshots, basic EDA (done)
 2. **Discontinuation risk classification** - which shortage-list features
-   (route, dosage form, therapeutic category, supplier concentration, days
-   posted) predict permanent discontinuation vs. an active/temporary
-   shortage
+   predict permanent discontinuation vs. an active/temporary shortage (done,
+   see results below)
 3. **Shortage duration (survival analysis)** - Kaplan-Meier estimate of how
    long shortages have been active, with censoring handled properly
 4. **Recall overlay** - cross-reference CDER recall records against the
    shortage list by manufacturer to see whether recently-recalled firms are
    over-represented among current shortages
+
+## Results so far (Phase 1: discontinuation risk)
+
+Full notebook: [`notebooks/01_discontinuation_risk.ipynb`](notebooks/01_discontinuation_risk.ipynb).
+
+A first pass at this model included how long an entry had sat on the
+shortage list as a feature and scored a perfect AUC of 1.000 - a sign of a
+methodology problem, not a good result. That feature is entangled with the
+label almost by definition (FDA's own bookkeeping tends to close out "to be
+discontinued" entries faster than open-ended "current" ones), so it was
+dropped from the model.
+
+With it removed, a plain random train/test split still scored AUC 0.986 on
+categorical features alone. That also needed a second look: there are only
+~140 unique combinations of route, dosage form, and therapeutic category
+across ~1,600 rows, so a random split lets the same combination land in
+both train and test - part of that score is the model recognizing a
+combination it already saw, not generalizing to a new drug profile.
+
+Splitting by *combination* instead - so every combination in the test fold
+is unseen during training - gives a more honest estimate: **mean AUC ~0.93
+(std ~0.06)** across five different random combo splits. Lower than the
+naive number, but still a real, moderately strong signal.
+
+The main driver turns out to be **supplier concentration**: how many other
+manufacturers of the same generic drug are also currently listed as short.
+A drug with few or no alternative suppliers also on the shortage list is
+structurally more fragile - one company's decision to discontinue is
+effectively the market's supply for that product. Therapeutic category and
+dosage form also show a clear, sensible pattern (anesthesia and psychiatry
+drugs are rarely permanently discontinued once short, ~5%; transplant,
+antiviral, and renal drugs are far more likely to be, though on small
+sample sizes; injectable dosage forms are less likely to be discontinued
+than tablets or solutions) but carry much less weight in the model than
+supplier concentration does.
 
 ## Tools
 
