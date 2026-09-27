@@ -47,7 +47,7 @@ lasted. That shapes the whole approach here:
    see results below)
 4. **Recall overlay** - cross-reference CDER recall records against the
    shortage list by manufacturer to see whether recently-recalled firms are
-   over-represented among current shortages
+   over-represented among current shortages (done, see results below)
 
 ## Results so far (Phase 1: discontinuation risk)
 
@@ -120,7 +120,34 @@ on the feed for 1,400-2,000+ days - roughly 4 to 6 years** - regardless of
 supplier tier or drug category. Most active FDA drug shortages are
 chronic, not transient.
 
+## Results so far (Phase 3: recall overlay)
+
+Full notebook: [`notebooks/03_recall_overlay.ipynb`](notebooks/03_recall_overlay.ipynb).
+
+The starting question was whether manufacturers with FDA recalls on record
+show up more often among shortages that turn into permanent
+discontinuations - the assumption being that recall trouble is a warning
+sign. Matching manufacturer names between the two datasets (55 of 145
+shortage-list manufacturers, covering 961 of 1,603 rows, match at least one
+CDER recall record), the data says the opposite: manufacturers with any
+recall on record have a **lower** discontinuation rate (25% vs 32%), wider
+still for a recall in the last two years (22% vs 35%) - both statistically
+significant (chi-square p < 0.01 and p < 0.0001).
+
+That contradicted the starting assumption, so it got checked rather than
+reported as-is. Manufacturers matched to a recall show up on a median of 42
+shortage-list entries elsewhere, versus 16 for unmatched manufacturers -
+recall history is entangled with manufacturer scale, using "how many other
+shortage listings carry this name" as a stand-in for company size (this
+data has no direct revenue or headcount figure). Restricting to
+manufacturers already at that larger scale shrinks the gap (31% vs 23%) but
+doesn't erase it, so scale explains part of this, not all of it.
+
+Practical takeaway: a manufacturer's recall history should not be treated
+as a risk-increasing signal on top of the Phase 1 model - the data doesn't
+support that direction.
+
 ## Tools
 
-Python, pandas, scikit-learn, lifelines (survival analysis), matplotlib,
-pytest, Jupyter notebooks.
+Python, pandas, scikit-learn, lifelines (survival analysis), scipy,
+matplotlib, pytest, Jupyter notebooks.
