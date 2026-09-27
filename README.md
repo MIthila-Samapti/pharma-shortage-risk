@@ -43,7 +43,8 @@ lasted. That shapes the whole approach here:
    predict permanent discontinuation vs. an active/temporary shortage (done,
    see results below)
 3. **Shortage duration (survival analysis)** - Kaplan-Meier estimate of how
-   long shortages have been active, with censoring handled properly
+   long shortages have been active, with censoring handled properly (done,
+   see results below)
 4. **Recall overlay** - cross-reference CDER recall records against the
    shortage list by manufacturer to see whether recently-recalled firms are
    over-represented among current shortages
@@ -82,6 +83,42 @@ antiviral, and renal drugs are far more likely to be, though on small
 sample sizes; injectable dosage forms are less likely to be discontinued
 than tablets or solutions) but carry much less weight in the model than
 supplier concentration does.
+
+## Results so far (Phase 2: shortage duration)
+
+Full notebook: [`notebooks/02_shortage_duration.ipynb`](notebooks/02_shortage_duration.ipynb).
+
+The original plan was a Kaplan-Meier curve for time from a shortage's onset
+to being marked a permanent discontinuation. Checking that against the raw
+data first: for 440 of 443 "To Be Discontinued" rows, `discontinued_date`
+is the exact same day as `initial_posting_date`. That means a
+discontinuation notice is posted as a brand-new feed entry the day it
+becomes public, not an update to a `Current` entry that had been open for
+a while - so with only one snapshot of the feed, there's no way to recover
+how long any shortage period before it actually lasted. That approach was
+dropped rather than reported.
+
+Reframed instead around **current status data**: every row has a real,
+non-degenerate `days_since_posted`, and either has already reached a final
+determination (discontinued or resolved) by the snapshot date, or is still
+`Current` - undecided, right-censored. That supports an honest question:
+of listings visible for at least X days, what share have already reached a
+final determination versus are still open?
+
+**Supplier concentration** - already the dominant driver in Phase 1's
+classification model - shows up again here, independently: shortages with
+only 1-2 other suppliers reach a final determination in a median of
+**~260 days**, and by one year only ~26% are still undecided. Shortages
+with 3+ other suppliers barely move off "still undecided" in the same
+window - the large majority just stay `Current`, open-ended, for years
+(log-rank test across tiers, p << 0.001). Two independent methods -
+classification and survival analysis - point at the same driver.
+
+A separate, complementary finding, not about censoring at all: among
+listings still marked `Current` today, the median one has **already been
+on the feed for 1,400-2,000+ days - roughly 4 to 6 years** - regardless of
+supplier tier or drug category. Most active FDA drug shortages are
+chronic, not transient.
 
 ## Tools
 
