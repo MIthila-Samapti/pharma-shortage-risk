@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RxContinuity — is this shortage temporary or permanent?</title>
+<meta name="description" content="Search any FDA drug shortage to see its estimated risk of becoming a permanent discontinuation, and why. Built on public FDA data.">
+<style>
+  :root{
+    --teal:#0F6E63; --teal-dark:#0B534A; --teal-light:#E9F2F0;
+    --ink:#12181C; --gray-700:#2A3238; --gray-500:#4B5560; --gray-400:#8A9490;
+    --border:#E7EAE9; --bg-soft:#F7F9F8;
+    --risk-red:#9A3F1F; --risk-red-bg:#FBEEE9; --risk-bar:#C1442D;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:"IBM Plex Sans",-apple-system,"Segoe UI",sans-serif;background:#FFFFFF;color:var(--ink);}
+  a{color:var(--teal);text-decoration:none;}
+  a:hover{color:var(--teal-dark);text-decoration:underline;}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;}
+  .wrap{width:100%;min-height:100vh;display:flex;flex-direction:column;}
+  .nav{width:100%;padding:20px 48px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand .logo{width:28px;height:28px;border-radius:7px;background:var(--teal);display:flex;align-items:center;justify-content:center;}
+  .brand span{font-size:17px;font-weight:600;letter-spacing:-0.01em;}
+  .navlinks{display:flex;align-items:center;gap:28px;font-size:14px;color:var(--gray-500);}
+  .navlinks a.gh{color:var(--ink);font-weight:500;}
+  .hero{width:100%;padding:64px 24px 48px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px;background:var(--bg-soft);}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:var(--teal-light);color:var(--teal);font-size:12px;font-weight:600;letter-spacing:0.02em;}
+  h1{margin:0;font-size:clamp(26px,4.5vw,40px);font-weight:600;letter-spacing:-0.02em;max-width:720px;line-height:1.15;}
+  .sub{margin:0;font-size:16px;color:var(--gray-500);max-width:560px;line-height:1.6;}
+  .searchbox{width:100%;max-width:640px;margin-top:8px;position:relative;}
+  .searchrow{display:flex;align-items:center;gap:10px;width:100%;padding:14px 18px;border-radius:12px;border:1.5px solid #D5DBD9;background:#fff;}
+  .searchrow input{flex-grow:1;border:none;outline:none;font-size:15px;font-family:inherit;color:var(--ink);background:transparent;}
+  .count{font-size:12px;color:var(--gray-400);white-space:nowrap;}
+  .suggestions{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(18,24,28,0.08);overflow:hidden;z-index:5;text-align:left;display:none;}
+  .suggestions.open{display:block;}
+  .sug-item{padding:12px 16px;font-size:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
+  .sug-item:last-child{border-bottom:none;}
+  .sug-item:hover, .sug-item.active{background:var(--bg-soft);}
+  .sug-score{font-size:12px;font-weight:600;color:var(--gray-500);}
+  .tryrow{display:flex;gap:8px;margin-top:10px;justify-content:center;flex-wrap:wrap;}
+  .tryrow span{font-size:12px;color:var(--gray-400);}
+  .try-link{font-size:12px;color:var(--teal);text-decoration:underline;cursor:pointer;}
+  .results-wrap{width:100%;padding:40px 24px 8px;display:flex;justify-content:center;}
+  .results-inner{width:100%;max-width:760px;}
+  .results-label{font-size:12px;font-weight:600;letter-spacing:0.04em;color:var(--gray-400);margin-bottom:12px;}
+  .card{width:100%;border:1px solid var(--border);border-radius:16px;padding:28px 32px;background:#fff;box-shadow:0 1px 2px rgba(18,24,28,0.04);}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;}
+  .drug-name{font-size:20px;font-weight:600;letter-spacing:-0.01em;}
+  .drug-meta{font-size:13px;color:var(--gray-500);margin-top:4px;}
+  .status-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:var(--risk-red-bg);color:var(--risk-red);font-size:12px;font-weight:600;white-space:nowrap;}
+  .status-pill .dot{width:6px;height:6px;border-radius:50%;background:var(--risk-red);}
+  .scorebox{display:flex;gap:28px;margin-top:26px;align-items:center;padding:20px;border-radius:12px;background:var(--bg-soft);}
+  .scorebox .num{text-align:center;flex-shrink:0;}
+  .scorebox .num .val{font-size:34px;font-weight:600;color:var(--risk-red);}
+  .scorebox .num .lbl{font-size:11px;color:var(--gray-400);margin-top:2px;}
+  .barbg{flex-grow:1;height:8px;border-radius:999px;background:var(--border);overflow:hidden;}
+  .barfg{height:100%;background:var(--risk-bar);border-radius:999px;}
+  .scoremeaning{font-size:13px;color:var(--gray-500);flex-shrink:0;max-width:180px;line-height:1.4;}
+  .why{margin-top:22px;}
+  .why-label{font-size:12px;font-weight:600;letter-spacing:0.03em;color:var(--gray-500);margin-bottom:10px;}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;}
+  .chip{padding:7px 12px;border-radius:8px;background:var(--bg-soft);border:1px solid var(--border);font-size:13px;}
+  .duration-note{margin-top:16px;font-size:13px;color:var(--gray-700);background:var(--teal-light);border-radius:8px;padding:10px 14px;line-height:1.5;}
+  .card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:22px;padding-top:16px;border-top:1px solid #F0F2F1;flex-wrap:wrap;gap:8px;}
+  .empty-state{width:100%;border:1px dashed var(--border);border-radius:16px;padding:40px 32px;text-align:center;color:var(--gray-500);font-size:14px;}
+  .method{width:100%;padding:64px 24px;margin-top:24px;background:var(--bg-soft);display:flex;justify-content:center;}
+  .method-inner{width:100%;max-width:960px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:32px;}
+  .method h3{font-size:13px;font-weight:600;letter-spacing:0.03em;margin-bottom:8px;}
+  .method h3.teal{color:var(--teal);}
+  .method h3.warn{color:var(--risk-red);}
+  .method p{margin:0;font-size:14px;line-height:1.6;color:var(--gray-700);}
+  .footer{width:100%;padding:40px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;border-top:1px solid var(--border);}
+  .footer .made{font-size:13px;color:var(--gray-500);}
+  .footer .made b{color:var(--ink);}
+  .footer .links{display:flex;gap:20px;font-size:13px;}
+  @media (max-width:600px){ .nav,.hero,.results-wrap,.method,.footer{padding-left:20px;padding-right:20px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="nav">
+    <div class="brand">
+      <div class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6V12C4 17 7.5 21 12 22C16.5 21 20 17 20 12V6L12 2Z" stroke="white" stroke-width="1.8" stroke-linejoin="round"/></svg></div>
+      <span>RxContinuity</span>
+    </div>
+    <div class="navlinks">
+      <a href="#methodology">Methodology</a>
+      <a href="#about">About</a>
+      <a class="gh" href="https://github.com/MIthila-Samapti/pharma-shortage-risk" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="badge">BUILT ON PUBLIC FDA DATA</div>
+    <h1>Is this shortage temporary — or permanent?</h1>
+    <p class="sub">Search any drug on the FDA's active shortage list to see its estimated risk of becoming a permanent discontinuation, and why.</p>
+
+    <div class="searchbox">
+      <div class="searchrow">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><circle cx="11" cy="11" r="7" stroke="#8A9490" stroke-width="2"/><path d="M21 21L16.5 16.5" stroke="#8A9490" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="search" type="text" placeholder="Search a drug name, e.g. lidocaine" aria-label="Search a drug name" autocomplete="off">
+        <span class="count" id="drugCount">— drugs indexed</span>
+      </div>
+      <div class="suggestions" id="suggestions"></div>
+    </div>
+    <div class="tryrow" id="tryrow"></div>
+  </div>
+
+  <div class="results-wrap">
+    <div class="results-inner">
+      <div class="results-label" id="resultsLabel">EXAMPLE RESULT — for a drug currently on the shortage list</div>
+      <div id="cardHost"></div>
+    </div>
+  </div>
+
+  <div id="methodology" class="method">
+    <div class="method-inner">
+      <div>
+        <h3 class="teal">WHAT THIS IS</h3>
+        <p>Among drugs already on the FDA's shortage list, an estimate of whether the listing will end in a permanent discontinuation, versus resolve as a temporary gap.</p>
+      </div>
+      <div>
+        <h3 class="teal">HOW IT WORKS</h3>
+        <p>A gradient-boosted model trained on public openFDA shortage data, validated with combination-grouped cross-validation (~0.93 AUC) so the score reflects generalization to unseen drug profiles, not memorized combinations. Supplier concentration — how many other manufacturers still list the drug — is the strongest signal, alongside dosage form and therapeutic category. A separate survival analysis cross-checks the same driver from a different angle: low-supplier shortages reach a final determination in a median of ~260 days, versus years for the rest.</p>
+      </div>
+      <div>
+        <h3 class="warn">LIMITATIONS</h3>
+        <p>A risk signal to support your own judgment, not a certainty. Some categories rest on small sample sizes. Only drugs currently on the FDA shortage list are indexed — this is not a "will X go into shortage" predictor. Not a substitute for official FDA guidance.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="about" class="footer">
+    <div class="made">Built by <b>Mithila Zaman Samapti</b> · Free, no login required · Source data: openFDA · <span id="lastUpdated"></span></div>
+    <div class="links">
+      <a href="https://github.com/MIthila-Samapti/pharma-shortage-risk" target="_blank" rel="noopener">GitHub repo</a>
+      <a href="https://github.com/MIthila-Samapti/pharma-shortage-risk/blob/main/README.md" target="_blank" rel="noopener">Full methodology</a>
+    </div>
+  </div>
+
+</div>
+
+<script src="data/drugs.js"></script>
+<script>
+(function () {
+  var drugs = (window.RX_DRUGS || []).slice();
+  var searchEl = document.getElementById("search");
+  var suggEl = document.getElementById("suggestions");
+  var cardHost = document.getElementById("cardHost");
+  var resultsLabel = document.getElementById("resultsLabel");
+  var countEl = document.getElementById("drugCount");
+  var tryrow = document.getElementById("tryrow");
+
+  countEl.textContent = drugs.length + " drugs indexed";
+
+  function escapeHtml(s) {
+    return (s || "").replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function renderCard(d, isExample) {
+    resultsLabel.textContent = isExample
+      ? "EXAMPLE RESULT — for a drug currently on the shortage list"
+      : "RESULT";
+    var meta = [d.therapeutic_category, d.dosage_form, d.suppliers_in_shortage_list + " supplier" + (d.suppliers_in_shortage_list === 1 ? "" : "s") + " listed"].filter(Boolean).join(" · ");
+    var meaning = d.risk_score >= 60
+      ? "Higher likelihood of becoming a permanent discontinuation"
+      : (d.risk_score >= 30 ? "Moderate, uncertain outlook" : "Lower likelihood of permanent discontinuation");
+    var chips = d.reasons.map(function (r) { return '<div class="chip">' + escapeHtml(r) + "</div>"; }).join("");
+    var durationHtml = d.duration_context
+      ? '<div class="duration-note">' + escapeHtml(d.duration_context) + "</div>"
+      : "";
+    cardHost.innerHTML =
+      '<div class="card">' +
+        '<div class="card-top">' +
+          '<div><div class="drug-name">' + escapeHtml(d.generic_name) + "</div>" +
+          '<div class="drug-meta">' + escapeHtml(meta) + "</div></div>" +
+          '<div class="status-pill"><span class="dot"></span>Current shortage</div>' +
+        "</div>" +
+        '<div class="scorebox">' +
+          '<div class="num"><div class="val mono">' + d.risk_score + '</div><div class="lbl">RISK SCORE / 100</div></div>' +
+          '<div class="barbg"><div class="barfg" style="width:' + d.risk_score + '%"></div></div>' +
+          '<div class="scoremeaning">' + meaning + "</div>" +
+        "</div>" +
+        '<div class="why"><div class="why-label">WHY THIS SCORE</div><div class="chips">' + chips + "</div></div>" +
+        durationHtml +
+        '<div class="card-foot">' +
+          '<span class="mono" style="font-size:12px;color:var(--gray-400);">' + escapeHtml(d.generic_name) + "</span>" +
+          '<a href="#methodology">How this is calculated →</a>' +
+        "</div>" +
+      "</div>";
+  }
+
+  function renderEmpty(query) {
+    resultsLabel.textContent = "RESULT";
+    cardHost.innerHTML = '<div class="empty-state">No drug on the current FDA shortage list matches "' + escapeHtml(query) + '". Try a different spelling, or check the <a href="https://github.com/MIthila-Samapti/pharma-shortage-risk" target="_blank" rel="noopener">full list on GitHub</a>.</div>';
+  }
+
+  function matches(query) {
+    var q = query.trim().toLowerCase();
+    if (!q) return [];
+    return drugs.filter(function (d) {
+      return d.generic_name.toLowerCase().indexOf(q) !== -1 ||
+        (d.brand_name && d.brand_name.toLowerCase().indexOf(q) !== -1);
+    }).slice(0, 8);
+  }
+
+  function closeSuggestions() {
+    suggEl.classList.remove("open");
+    suggEl.innerHTML = "";
+  }
+
+  function openSuggestions(list) {
+    if (!list.length) { closeSuggestions(); return; }
+    suggEl.innerHTML = list.map(function (d) {
+      return '<div class="sug-item" data-name="' + escapeHtml(d.generic_name) + '">' +
+        "<span>" + escapeHtml(d.generic_name) + '</span><span class="sug-score mono">' + d.risk_score + "</span></div>";
+    }).join("");
+    suggEl.classList.add("open");
+    Array.prototype.forEach.call(suggEl.querySelectorAll(".sug-item"), function (el) {
+      el.addEventListener("mousedown", function (e) {
+        e.preventDefault();
+        selectByName(el.getAttribute("data-name"));
+      });
+    });
+  }
+
+  function selectByName(name) {
+    var d = drugs.filter(function (x) { return x.generic_name === name; })[0];
+    if (!d) return;
+    searchEl.value = d.generic_name;
+    closeSuggestions();
+    renderCard(d, false);
+  }
+
+  searchEl.addEventListener("input", function () {
+    var list = matches(searchEl.value);
+    openSuggestions(list);
+    if (searchEl.value.trim() === "") {
+      showDefaultExample();
+    } else if (list.length === 1 && list[0].generic_name.toLowerCase() === searchEl.value.trim().toLowerCase()) {
+      renderCard(list[0], false);
+    } else if (list.length === 0) {
+      renderEmpty(searchEl.value);
+    }
+  });
+
+  searchEl.addEventListener("blur", function () {
+    setTimeout(closeSuggestions, 120);
+  });
+
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest(".searchbox")) closeSuggestions();
+  });
+
+  function showDefaultExample() {
+    if (!drugs.length) return;
+    var example = drugs[Math.floor(drugs.length / 3)] || drugs[0];
+    renderCard(example, true);
+  }
+
+  function buildTryRow() {
+    if (drugs.length < 3) { tryrow.style.display = "none"; return; }
+    var picks = [drugs[0], drugs[Math.floor(drugs.length / 2)], drugs[drugs.length - 1]];
+    var html = '<span>Try:</span>';
+    picks.forEach(function (d, i) {
+      html += '<span class="try-link" data-name="' + escapeHtml(d.generic_name) + '">' + escapeHtml(d.generic_name) + "</span>";
+      if (i < picks.length - 1) html += "<span>·</span>";
+    });
+    tryrow.innerHTML = html;
+    Array.prototype.forEach.call(tryrow.querySelectorAll(".try-link"), function (el) {
+      el.addEventListener("click", function () { selectByName(el.getAttribute("data-name")); });
+    });
+  }
+
+  buildTryRow();
+  showDefaultExample();
+
+  var updated = document.getElementById("lastUpdated");
+  if (window.RX_DATA_BUILT_AT) {
+    updated.textContent = "Data refreshed " + window.RX_DATA_BUILT_AT;
+  }
+})();
+</script>
+</body>
+</html>
