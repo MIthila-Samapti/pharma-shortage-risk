@@ -1051,4 +1051,4 @@ window.RX_DRUGS = [
   "duration_context": "Shortages with this level of supplier concentration typically stay open, undecided, for years rather than resolving quickly."
  }
 ];
-window.RX_DATA_BUILT_AT = "2026-10-01";
+window.RX_DATA_BUILT_AT = "2026-10-02";
