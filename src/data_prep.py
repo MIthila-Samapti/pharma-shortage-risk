@@ -1,13 +1,39 @@
 """Load and clean the FDA shortage + recall snapshots."""
 
+import os
+import re
+
 import pandas as pd
 import numpy as np
 
 SNAPSHOT_DATE = pd.Timestamp("2026-09-22")
+RAW_DIR = "data/raw"
+_SNAPSHOT_NAME = re.compile(r"^fda_shortages_(\d{4}-\d{2}-\d{2})\.csv$")
+
+
+def snapshot_date_from_path(path):
+    """The date in a snapshot's file name (fda_shortages_YYYY-MM-DD.csv),
+    or None if the name doesn't carry one."""
+    m = _SNAPSHOT_NAME.match(os.path.basename(str(path)))
+    return pd.Timestamp(m.group(1)) if m else None
+
+
+def latest_snapshot_path(raw_dir=RAW_DIR):
+    """Path of the newest dated shortage snapshot in data/raw. The daily
+    job adds a new file whenever FDA's list changes, so "newest" is what
+    the site should show."""
+    dated = sorted(n for n in os.listdir(raw_dir) if _SNAPSHOT_NAME.match(n))
+    if not dated:
+        raise FileNotFoundError(f"no fda_shortages_YYYY-MM-DD.csv snapshot in {raw_dir}")
+    return os.path.join(raw_dir, dated[-1])
 
 
 def load_shortages(path="data/raw/fda_shortages_2026-09-22.csv"):
     df = pd.read_csv(path)
+    # listing ages are measured to the day the snapshot was taken, not to
+    # a fixed date - otherwise every newer snapshot would report ages as
+    # of 2026-09-22
+    snapshot_date = snapshot_date_from_path(path) or SNAPSHOT_DATE
     df["initial_posting_date"] = pd.to_datetime(df["initial_posting_date"], errors="coerce")
     df["update_date"] = pd.to_datetime(df["update_date"], errors="coerce")
     df["discontinued_date"] = pd.to_datetime(df["discontinued_date"], errors="coerce")
@@ -15,7 +41,7 @@ def load_shortages(path="data/raw/fda_shortages_2026-09-22.csv"):
     # a handful of rows have no posting date at all - can't use them for
     # duration/timing features, but they're still fine for the classification
     # phase, so keep them and let downstream code decide what it needs
-    df["days_since_posted"] = (SNAPSHOT_DATE - df["initial_posting_date"]).dt.days
+    df["days_since_posted"] = (snapshot_date - df["initial_posting_date"]).dt.days
 
     df["is_discontinuation"] = (df["status"] == "To Be Discontinued").astype(int)
     df["is_resolved"] = (df["status"] == "Resolved").astype(int)

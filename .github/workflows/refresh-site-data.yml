@@ -22,14 +22,22 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Rebuild scored site data
+      # Pull today's list from openFDA. Saves a new dated snapshot only when
+      # the list differs from the newest one already saved, and always adds
+      # a line to data/raw/fetch_log.csv. If the download fails this step
+      # fails and nothing below runs, so the site never claims a refresh
+      # that didn't happen.
+      - name: Download today's FDA shortage list
+        run: python3 src/fetch_shortages.py
+
+      - name: Rebuild scored site data from the newest snapshot
         working-directory: .
         run: PYTHONPATH=src python3 src/build_site_data.py
 
-      - name: Commit updated data if changed
+      - name: Commit new snapshot, fetch log and site data if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/data/drugs.js
-          git diff --cached --quiet || git commit -m "Auto-refresh site data ($(date -u +%Y-%m-%d))"
+          git add data/raw docs/data/drugs.js
+          git diff --cached --quiet || git commit -m "Daily FDA check ($(date -u +%Y-%m-%d))"
           git push

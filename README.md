@@ -18,6 +18,37 @@ Those two are retail/CPG focused; this one applies the same disruption-risk
 thinking to pharmaceutical supply chains, on public healthcare data instead
 of retail sales data.
 
+## Correction, October 2026
+
+A week after launch I re-checked my own results. Three things below were
+wrong or overstated, and I would rather say so here than leave them.
+
+- **A plain count does the model's job.** The Phase 1 model scores about
+  0.93 AUC on unseen drug profiles. Counting how many makers are listed for
+  the drug, with no model at all, scores about 0.92 on the same test (0.935
+  on all rows). The reason is simple: a discontinuation notice is filed by
+  one company for its own product, so "one maker listed" is nearly always a
+  notice (331 of 348 such rows).
+- **The model separates two kinds of FDA record. It does not predict how a
+  shortage ends.** Of 238 drugs in the snapshot, 180 have a discontinuation
+  notice, 70 are in current shortage, and only 12 are on both lists. Nothing
+  here follows a listing over time.
+- **The "~260 days" duration finding is an artifact.** FDA removes
+  discontinuation notices from its list after one year (and resolved
+  shortages after six months), so those rows are young by construction: 98%
+  are under a year old, median 182 days. Current shortages with one or two
+  makers listed have a median age of 1,735 days.
+
+The site also said "updated daily" while the daily job only re-scored the
+2026-09-22 file. The job now downloads FDA's list each day
+(`src/fetch_shortages.py`), keeps a dated copy whenever it changes, and the
+site shows the date the data was pulled.
+
+What still holds: current shortages are chronic (median age 4.8 years, 99%
+older than one year), and shortages and discontinuations are close to two
+separate sets of drugs. The results sections below are kept as written, so
+read them with this correction in mind.
+
 ## Why this dataset is different from the retail ones
 
 The retail projects had transaction-level history to backtest against. The
