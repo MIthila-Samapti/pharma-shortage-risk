@@ -11,7 +11,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RxContinuity</title>
-<meta name="description" content="Search any FDA drug shortage to see its estimated risk of becoming a permanent discontinuation, and why. Built on public FDA data.">
+<meta name="description" content="Search any drug on FDA's shortage list to see how closely it resembles a company leaving the market, and why. Built on public FDA data.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,500;0,600;0,700;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -274,9 +274,9 @@
 
   <div class="ledger-narrow">
     <div class="hero">
-      <div class="eyebrow">Public FDA data · updated daily</div>
-      <h1 class="headline">Is this shortage <em>temporary</em> — or permanent?</h1>
-      <p class="dek">Search any drug on the FDA's active shortage list for an estimated discontinuation risk, and the reasoning behind it.</p>
+      <div class="eyebrow">Public FDA data · <span id="asOfEyebrow">checked daily</span></div>
+      <h1 class="headline">Does this shortage look like a <em>company leaving</em>?</h1>
+      <p class="dek">Search any drug on the FDA's active shortage list to see how closely it resembles the discontinuation notices on the same list, and why.</p>
 
       <div class="search-shell">
         <div class="search-row">
@@ -308,17 +308,17 @@
         <div class="method-item">
           <span class="num">01</span>
           <h3>What this reads</h3>
-          <p>Among drugs already on the FDA's shortage list, an estimate of whether the listing ends in a permanent discontinuation, or resolves as a temporary gap.</p>
+          <p>The FDA's list mixes two kinds of record: drugs that are short right now, and notices that a company will stop making a product. The score shows how closely a current shortage resembles those notices. It is not a forecast of how or when the shortage will end.</p>
         </div>
         <div class="method-item">
           <span class="num">02</span>
           <h3>How it's scored</h3>
-          <p>A gradient-boosted model trained on public openFDA shortage records, validated with combination-grouped cross-validation (~0.93 AUC on unseen drug profiles). Supplier concentration is the dominant signal, alongside dosage form and therapeutic category — cross-checked by a separate survival analysis: low-supplier shortages reach a final determination in a median of ~260 days, versus years for the rest.</p>
+          <p>A gradient-boosted model trained on one day's copy of the public openFDA shortage list. It scores about 0.93 AUC on drug profiles it has not seen, but a plain count of how many makers are listed for the drug scores about 0.92 on the same test. That count is the main signal. Dosage form and therapeutic category add little.</p>
         </div>
         <div class="method-item">
           <span class="num" style="color:var(--rust);">!</span>
           <h3 class="warn">Limitations</h3>
-          <p>A signal to support your own judgment, not a certainty. Some categories rest on small sample sizes, and only drugs currently shortage-listed are indexed — this doesn't predict which drugs go into shortage next. Not a substitute for official FDA guidance.</p>
+          <p>A signal to support your own judgment, not a certainty. The FDA removes resolved shortages from its list after 6 months and discontinuation notices after 1 year, so no listing is followed over time and this cannot say how long a shortage will last. Only drugs currently shortage-listed are indexed, and it does not predict which drugs go into shortage next. Not a substitute for official FDA guidance.</p>
         </div>
       </div>
       <p style="margin:32px 0 0; font-size:12.5px; line-height:1.6; color:var(--faint); border-top:1px solid var(--line); padding-top:20px;">
@@ -364,10 +364,10 @@
 
   function renderCard(d, isExample) {
     resultsLabel.textContent = isExample ? "Example entry" : "Entry";
-    var meta = [d.therapeutic_category, d.dosage_form, d.suppliers_in_shortage_list + " supplier" + (d.suppliers_in_shortage_list === 1 ? "" : "s") + " listed"].filter(Boolean).join(" · ");
+    var meta = [d.therapeutic_category, d.dosage_form, d.suppliers_in_shortage_list + " maker" + (d.suppliers_in_shortage_list === 1 ? "" : "s") + " listed"].filter(Boolean).join(" · ");
     var verdict = d.risk_score >= 60
-      ? "Higher likelihood of becoming a <b>permanent discontinuation</b>."
-      : (d.risk_score >= 30 ? "A <b>moderate, uncertain</b> outlook." : "Lower likelihood of permanent discontinuation — <b>more likely temporary</b>.");
+      ? "Looks <b>much like</b> the discontinuation notices on the FDA's list."
+      : (d.risk_score >= 30 ? "A <b>mixed</b> picture." : "Looks <b>unlike</b> a discontinuation notice.");
     var zone = zoneColor(d.risk_score);
     var reasons = d.reasons.map(function (r, i) {
       return '<li><span class="why-num mono">' + String(i + 1).padStart(2, "0") + '</span><span>' + escapeHtml(r) + "</span></li>";
@@ -385,7 +385,7 @@
         "</div>" +
         '<div class="gauge-block">' +
           '<div class="gauge-toprow">' +
-            '<span class="gauge-label">Discontinuation risk</span>' +
+            '<span class="gauge-label">Exit signal</span>' +
             '<span class="gauge-readout" style="color:' + zone.fg + '">' + d.risk_score + ' / 100</span>' +
           "</div>" +
           '<div class="gauge-track"><div class="gauge-fill" style="width:' + d.risk_score + '%; background:' + zone.fg + '"></div></div>' +
@@ -529,7 +529,13 @@
   showDefaultExample();
 
   var updated = document.getElementById("lastUpdated");
-  if (window.RX_DATA_BUILT_AT) updated.textContent = "data refreshed " + window.RX_DATA_BUILT_AT;
+  // RX_DATA_AS_OF is the day the FDA's list was pulled, not the day the site was rebuilt
+  if (window.RX_DATA_AS_OF) {
+    var asOf = new Date(window.RX_DATA_AS_OF + "T00:00:00Z").toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });
+    updated.textContent = "FDA data as of " + asOf;
+    var eyebrowDate = document.getElementById("asOfEyebrow");
+    if (eyebrowDate) eyebrowDate.textContent = "as of " + asOf;
+  }
 
   // theme toggle
   var themeBtn = document.getElementById("themeBtn");
