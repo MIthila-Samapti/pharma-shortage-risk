@@ -12,3 +12,4 @@ checked_on,records,current,to_be_discontinued,resolved,data_changed,snapshot_fil
 2026-10-23,1611,1142,450,19,yes,fda_shortages_2026-10-23.csv,2026-10-23
 2026-10-24,1611,1142,450,19,yes,fda_shortages_2026-10-24.csv,2026-10-23
 2026-10-25,1611,1142,450,19,no,fda_shortages_2026-10-24.csv,2026-10-23
+2026-10-26,1611,1142,450,19,no,fda_shortages_2026-10-24.csv,2026-10-23
