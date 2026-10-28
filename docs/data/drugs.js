@@ -7,7 +7,7 @@ window.RX_DRUGS = [
   "dosage_form": "Injection",
   "therapeutic_category": "Oncology",
   "suppliers_in_shortage_list": 1,
-  "risk_score": 98,
+  "risk_score": 97,
   "reasons": [
    "1 maker listed for this drug (no other maker on FDA's list)",
    "Injection dosage form (17% of these listings are discontinuation notices)",
@@ -37,7 +37,7 @@ window.RX_DRUGS = [
   "dosage_form": "Tablet",
   "therapeutic_category": "Psychiatry",
   "suppliers_in_shortage_list": 1,
-  "risk_score": 91,
+  "risk_score": 92,
   "reasons": [
    "1 maker listed for this drug (no other maker on FDA's list)",
    "Tablet dosage form (48% of these listings are discontinuation notices)",
@@ -52,7 +52,7 @@ window.RX_DRUGS = [
   "dosage_form": "Injection",
   "therapeutic_category": "Rheumatology",
   "suppliers_in_shortage_list": 1,
-  "risk_score": 91,
+  "risk_score": 90,
   "reasons": [
    "1 maker listed for this drug (no other maker on FDA's list)",
    "Injection dosage form (17% of these listings are discontinuation notices)",
@@ -76,13 +76,28 @@ window.RX_DRUGS = [
   "duration_context": "On FDA's shortage list since September 2019 (about 7 years)."
  },
  {
+  "generic_name": "Clindamycin Phosphate Injection",
+  "brand_name": "CLEOCIN PHOSPHATE",
+  "route": "INTRAMUSCULAR",
+  "dosage_form": "Injection",
+  "therapeutic_category": "Anti-Infective",
+  "suppliers_in_shortage_list": 5,
+  "risk_score": 45,
+  "reasons": [
+   "5 makers listed for this drug",
+   "Injection dosage form (17% of these listings are discontinuation notices)",
+   "Anti-Infective category (56% of these listings are discontinuation notices)"
+  ],
+  "duration_context": "On FDA's shortage list since March 2023 (about 4 years)."
+ },
+ {
   "generic_name": "Flurazepam Hydrochloride Capsule",
   "brand_name": "FLURAZEPAM HYDROCHLORIDE",
   "route": "ORAL",
   "dosage_form": "Capsule",
   "therapeutic_category": "Oncology",
   "suppliers_in_shortage_list": 2,
-  "risk_score": 46,
+  "risk_score": 43,
   "reasons": [
    "2 makers listed for this drug",
    "Capsule dosage form (22% of these listings are discontinuation notices)",
@@ -97,7 +112,7 @@ window.RX_DRUGS = [
   "dosage_form": "Injection",
   "therapeutic_category": "Anti-Infective",
   "suppliers_in_shortage_list": 2,
-  "risk_score": 46,
+  "risk_score": 39,
   "reasons": [
    "2 makers listed for this drug",
    "Injection dosage form (17% of these listings are discontinuation notices)",
@@ -106,28 +121,13 @@ window.RX_DRUGS = [
   "duration_context": "On FDA's shortage list since April 2023 (about 4 years)."
  },
  {
-  "generic_name": "Clindamycin Phosphate Injection",
-  "brand_name": "CLEOCIN PHOSPHATE",
-  "route": "INTRAMUSCULAR",
-  "dosage_form": "Injection",
-  "therapeutic_category": "Anti-Infective",
-  "suppliers_in_shortage_list": 5,
-  "risk_score": 44,
-  "reasons": [
-   "5 makers listed for this drug",
-   "Injection dosage form (17% of these listings are discontinuation notices)",
-   "Anti-Infective category (56% of these listings are discontinuation notices)"
-  ],
-  "duration_context": "On FDA's shortage list since March 2023 (about 4 years)."
- },
- {
   "generic_name": "Quinapril/Hydrochlorothiazide Tablet",
   "brand_name": "QUINAPRIL AND HYDROCHLOROTHIAZIDE",
   "route": "ORAL",
   "dosage_form": "Tablet",
   "therapeutic_category": "Cardiovascular",
   "suppliers_in_shortage_list": 2,
-  "risk_score": 38,
+  "risk_score": 31,
   "reasons": [
    "2 makers listed for this drug",
    "Tablet dosage form (48% of these listings are discontinuation notices)",
@@ -142,7 +142,7 @@ window.RX_DRUGS = [
   "dosage_form": "Capsule",
   "therapeutic_category": "Anti-Infective",
   "suppliers_in_shortage_list": 2,
-  "risk_score": 29,
+  "risk_score": 28,
   "reasons": [
    "2 makers listed for this drug",
    "Capsule dosage form (22% of these listings are discontinuation notices)",
@@ -157,7 +157,7 @@ window.RX_DRUGS = [
   "dosage_form": "Oral Solution",
   "therapeutic_category": "Cardiovascular",
   "suppliers_in_shortage_list": 1,
-  "risk_score": 23,
+  "risk_score": 21,
   "reasons": [
    "1 maker listed for this drug (no other maker on FDA's list)",
    "Oral Solution dosage form",
@@ -166,13 +166,28 @@ window.RX_DRUGS = [
   "duration_context": "On FDA's shortage list since March 2026 (under a year)."
  },
  {
+  "generic_name": "Rifampin Injection",
+  "brand_name": null,
+  "route": "Unknown",
+  "dosage_form": "Injection",
+  "therapeutic_category": "Anti-Infective",
+  "suppliers_in_shortage_list": 3,
+  "risk_score": 21,
+  "reasons": [
+   "3 makers listed for this drug",
+   "Injection dosage form (17% of these listings are discontinuation notices)",
+   "Anti-Infective category (56% of these listings are discontinuation notices)"
+  ],
+  "duration_context": "On FDA's shortage list since February 2021 (about 6 years)."
+ },
+ {
   "generic_name": "Hydroxocobalamin Injection",
   "brand_name": "CYANOKIT",
   "route": "INTRAVENOUS",
   "dosage_form": "Injection",
   "therapeutic_category": "Other",
   "suppliers_in_shortage_list": 2,
-  "risk_score": 19,
+  "risk_score": 20,
   "reasons": [
    "2 makers listed for this drug",
    "Injection dosage form (17% of these listings are discontinuation notices)",
@@ -181,49 +196,19 @@ window.RX_DRUGS = [
   "duration_context": "On FDA's shortage list since November 2024 (about 2 years)."
  },
  {
-  "generic_name": "Technetium TC-99M Pyrophosphate Kit Injection",
-  "brand_name": "KIT FOR THE PREPARATION OF TECHNETIUM TC99M PYROPHOSPHATE",
-  "route": "INTRAVENOUS",
-  "dosage_form": "Injection",
-  "therapeutic_category": "Medical Imaging",
-  "suppliers_in_shortage_list": 2,
-  "risk_score": 18,
-  "reasons": [
-   "2 makers listed for this drug",
-   "Injection dosage form (17% of these listings are discontinuation notices)",
-   "Medical Imaging category (80% of these listings are discontinuation notices)"
-  ],
-  "duration_context": "On FDA's shortage list since December 2023 (about 3 years)."
- },
- {
   "generic_name": "Bacitracin Ophthalmic Ointment",
   "brand_name": null,
   "route": "Unknown",
   "dosage_form": "Ophthalmic Ointment",
   "therapeutic_category": "Anti-Infective",
   "suppliers_in_shortage_list": 1,
-  "risk_score": 17,
+  "risk_score": 19,
   "reasons": [
    "1 maker listed for this drug (no other maker on FDA's list)",
    "Ophthalmic Ointment dosage form",
    "Anti-Infective category (56% of these listings are discontinuation notices)"
   ],
   "duration_context": "On FDA's shortage list since March 2025 (about 2 years)."
- },
- {
-  "generic_name": "Rifampin Injection",
-  "brand_name": null,
-  "route": "Unknown",
-  "dosage_form": "Injection",
-  "therapeutic_category": "Anti-Infective",
-  "suppliers_in_shortage_list": 3,
-  "risk_score": 17,
-  "reasons": [
-   "3 makers listed for this drug",
-   "Injection dosage form (17% of these listings are discontinuation notices)",
-   "Anti-Infective category (56% of these listings are discontinuation notices)"
-  ],
-  "duration_context": "On FDA's shortage list since February 2021 (about 6 years)."
  },
  {
   "generic_name": "Sufentanil Citrate Injection",
@@ -241,49 +226,64 @@ window.RX_DRUGS = [
   "duration_context": "On FDA's shortage list since May 2022 (about 4 years)."
  },
  {
-  "generic_name": "Metronidazole Injection",
+  "generic_name": "Technetium TC-99M Pyrophosphate Kit Injection",
+  "brand_name": "KIT FOR THE PREPARATION OF TECHNETIUM TC99M PYROPHOSPHATE",
+  "route": "INTRAVENOUS",
+  "dosage_form": "Injection",
+  "therapeutic_category": "Medical Imaging",
+  "suppliers_in_shortage_list": 2,
+  "risk_score": 16,
+  "reasons": [
+   "2 makers listed for this drug",
+   "Injection dosage form (17% of these listings are discontinuation notices)",
+   "Medical Imaging category (80% of these listings are discontinuation notices)"
+  ],
+  "duration_context": "On FDA's shortage list since December 2023 (about 3 years)."
+ },
+ {
+  "generic_name": "Dextrose Monohydrate 10% Injection",
   "brand_name": null,
   "route": "Unknown",
   "dosage_form": "Injection",
-  "therapeutic_category": "Anti-Infective",
+  "therapeutic_category": "Endocrinology/Metabolism",
   "suppliers_in_shortage_list": 4,
   "risk_score": 15,
   "reasons": [
    "4 makers listed for this drug",
    "Injection dosage form (17% of these listings are discontinuation notices)",
-   "Anti-Infective category (56% of these listings are discontinuation notices)"
+   "Endocrinology/Metabolism category (26% of these listings are discontinuation notices)"
   ],
-  "duration_context": "On FDA's shortage list since January 2022 (about 5 years)."
+  "duration_context": "On FDA's shortage list since March 2022 (about 5 years)."
  },
  {
-  "generic_name": "Atropine Sulfate Injection",
+  "generic_name": "Dextrose Monohydrate 5% Injection",
   "brand_name": null,
   "route": "Unknown",
   "dosage_form": "Injection",
-  "therapeutic_category": "Anesthesia",
-  "suppliers_in_shortage_list": 10,
-  "risk_score": 14,
+  "therapeutic_category": "Endocrinology/Metabolism",
+  "suppliers_in_shortage_list": 5,
+  "risk_score": 15,
   "reasons": [
-   "10 makers listed for this drug (many suppliers)",
+   "5 makers listed for this drug",
    "Injection dosage form (17% of these listings are discontinuation notices)",
-   "Anesthesia category (5% of these listings are discontinuation notices)"
+   "Endocrinology/Metabolism category (26% of these listings are discontinuation notices)"
   ],
-  "duration_context": "On FDA's shortage list since January 2012 (about 15 years)."
+  "duration_context": "On FDA's shortage list since February 2022 (about 5 years)."
  },
  {
-  "generic_name": "Bupivacaine Hydrochloride Injection",
-  "brand_name": null,
-  "route": "Unknown",
+  "generic_name": "Liraglutide Injection",
+  "brand_name": "LIRAGLUTIDE",
+  "route": "SUBCUTANEOUS",
   "dosage_form": "Injection",
-  "therapeutic_category": "Anesthesia",
-  "suppliers_in_shortage_list": 10,
+  "therapeutic_category": "Endocrinology/Metabolism",
+  "suppliers_in_shortage_list": 6,
   "risk_score": 14,
   "reasons": [
-   "10 makers listed for this drug (many suppliers)",
+   "6 makers listed for this drug",
    "Injection dosage form (17% of these listings are discontinuation notices)",
-   "Anesthesia category (5% of these listings are discontinuation notices)"
+   "Endocrinology/Metabolism category (26% of these listings are discontinuation notices)"
   ],
-  "duration_context": "On FDA's shortage list since February 2018 (about 9 years)."
+  "duration_context": "On FDA's shortage list since July 2023 (about 3 years)."
  },
  {
   "generic_name": "Valproate Sodium Injection",
@@ -301,34 +301,34 @@ window.RX_DRUGS = [
   "duration_context": "On FDA's shortage list since December 2020 (about 6 years)."
  },
  {
-  "generic_name": "Liraglutide Injection",
-  "brand_name": "LIRAGLUTIDE",
-  "route": "SUBCUTANEOUS",
+  "generic_name": "Atropine Sulfate Injection",
+  "brand_name": null,
+  "route": "Unknown",
   "dosage_form": "Injection",
-  "therapeutic_category": "Endocrinology/Metabolism",
-  "suppliers_in_shortage_list": 6,
+  "therapeutic_category": "Anesthesia",
+  "suppliers_in_shortage_list": 10,
   "risk_score": 13,
   "reasons": [
-   "6 makers listed for this drug",
+   "10 makers listed for this drug (many suppliers)",
    "Injection dosage form (17% of these listings are discontinuation notices)",
-   "Endocrinology/Metabolism category (27% of these listings are discontinuation notices)"
+   "Anesthesia category (5% of these listings are discontinuation notices)"
   ],
-  "duration_context": "On FDA's shortage list since July 2023 (about 3 years)."
+  "duration_context": "On FDA's shortage list since January 2012 (about 15 years)."
  },
  {
-  "generic_name": "Propranolol Hydrochloride Injection",
-  "brand_name": "PROPRANOLOL HYDROCHLORIDE",
-  "route": "INTRAVENOUS",
+  "generic_name": "Bupivacaine Hydrochloride Injection",
+  "brand_name": null,
+  "route": "Unknown",
   "dosage_form": "Injection",
-  "therapeutic_category": "Cardiovascular",
-  "suppliers_in_shortage_list": 2,
+  "therapeutic_category": "Anesthesia",
+  "suppliers_in_shortage_list": 10,
   "risk_score": 13,
   "reasons": [
-   "2 makers listed for this drug",
+   "10 makers listed for this drug (many suppliers)",
    "Injection dosage form (17% of these listings are discontinuation notices)",
-   "Cardiovascular category (45% of these listings are discontinuation notices)"
+   "Anesthesia category (5% of these listings are discontinuation notices)"
   ],
-  "duration_context": "On FDA's shortage list since October 2023 (about 3 years)."
+  "duration_context": "On FDA's shortage list since February 2018 (about 9 years)."
  },
  {
   "generic_name": "Dexmedetomidine Hydrochloride Injection",
@@ -337,7 +337,7 @@ window.RX_DRUGS = [
   "dosage_form": "Injection",
   "therapeutic_category": "Anesthesia",
   "suppliers_in_shortage_list": 18,
-  "risk_score": 12,
+  "risk_score": 13,
   "reasons": [
    "18 makers listed for this drug (many suppliers)",
    "Injection dosage form (17% of these listings are discontinuation notices)",
@@ -352,13 +352,73 @@ window.RX_DRUGS = [
   "dosage_form": "Injection",
   "therapeutic_category": "Oncology",
   "suppliers_in_shortage_list": 4,
-  "risk_score": 12,
+  "risk_score": 13,
   "reasons": [
    "4 makers listed for this drug",
    "Injection dosage form (17% of these listings are discontinuation notices)",
    "Oncology category (43% of these listings are discontinuation notices)"
   ],
   "duration_context": "On FDA's shortage list since June 2026 (under a year)."
+ },
+ {
+  "generic_name": "Lidocaine Hydrochloride Injection",
+  "brand_name": null,
+  "route": "Unknown",
+  "dosage_form": "Injection",
+  "therapeutic_category": "Anesthesia",
+  "suppliers_in_shortage_list": 11,
+  "risk_score": 13,
+  "reasons": [
+   "11 makers listed for this drug (many suppliers)",
+   "Injection dosage form (17% of these listings are discontinuation notices)",
+   "Anesthesia category (5% of these listings are discontinuation notices)"
+  ],
+  "duration_context": "On FDA's shortage list since February 2012 (about 15 years)."
+ },
+ {
+  "generic_name": "Rocuronium Bromide Injection",
+  "brand_name": null,
+  "route": "Unknown",
+  "dosage_form": "Injection",
+  "therapeutic_category": "Anesthesia",
+  "suppliers_in_shortage_list": 11,
+  "risk_score": 13,
+  "reasons": [
+   "11 makers listed for this drug (many suppliers)",
+   "Injection dosage form (17% of these listings are discontinuation notices)",
+   "Anesthesia category (5% of these listings are discontinuation notices)"
+  ],
+  "duration_context": "On FDA's shortage list since February 2023 (about 4 years)."
+ },
+ {
+  "generic_name": "Metronidazole Injection",
+  "brand_name": null,
+  "route": "Unknown",
+  "dosage_form": "Injection",
+  "therapeutic_category": "Anti-Infective",
+  "suppliers_in_shortage_list": 4,
+  "risk_score": 12,
+  "reasons": [
+   "4 makers listed for this drug",
+   "Injection dosage form (17% of these listings are discontinuation notices)",
+   "Anti-Infective category (56% of these listings are discontinuation notices)"
+  ],
+  "duration_context": "On FDA's shortage list since January 2022 (about 5 years)."
+ },
+ {
+  "generic_name": "Propranolol Hydrochloride Injection",
+  "brand_name": "PROPRANOLOL HYDROCHLORIDE",
+  "route": "INTRAVENOUS",
+  "dosage_form": "Injection",
+  "therapeutic_category": "Cardiovascular",
+  "suppliers_in_shortage_list": 2,
+  "risk_score": 12,
+  "reasons": [
+   "2 makers listed for this drug",
+   "Injection dosage form (17% of these listings are discontinuation notices)",
+   "Cardiovascular category (45% of these listings are discontinuation notices)"
+  ],
+  "duration_context": "On FDA's shortage list since October 2023 (about 3 years)."
  },
  {
   "generic_name": "Streptozocin Powder, For Solution",
@@ -376,36 +436,6 @@ window.RX_DRUGS = [
   "duration_context": "On FDA's shortage list since July 2022 (about 4 years)."
  },
  {
-  "generic_name": "Carboplatin Injection",
-  "brand_name": "CARBOPLATIN",
-  "route": "INTRAVENOUS",
-  "dosage_form": "Injection",
-  "therapeutic_category": "Oncology",
-  "suppliers_in_shortage_list": 10,
-  "risk_score": 11,
-  "reasons": [
-   "10 makers listed for this drug (many suppliers)",
-   "Injection dosage form (17% of these listings are discontinuation notices)",
-   "Oncology category (43% of these listings are discontinuation notices)"
-  ],
-  "duration_context": "On FDA's shortage list since April 2023 (about 3 years)."
- },
- {
-  "generic_name": "Lidocaine Hydrochloride Injection",
-  "brand_name": null,
-  "route": "Unknown",
-  "dosage_form": "Injection",
-  "therapeutic_category": "Anesthesia",
-  "suppliers_in_shortage_list": 11,
-  "risk_score": 11,
-  "reasons": [
-   "11 makers listed for this drug (many suppliers)",
-   "Injection dosage form (17% of these listings are discontinuation notices)",
-   "Anesthesia category (5% of these listings are discontinuation notices)"
-  ],
-  "duration_context": "On FDA's shortage list since February 2012 (about 15 years)."
- },
- {
   "generic_name": "Riluzole Oral Suspension",
   "brand_name": "TIGLUTIK",
   "route": "ORAL",
@@ -421,19 +451,94 @@ window.RX_DRUGS = [
   "duration_context": "On FDA's shortage list since January 2024 (about 3 years)."
  },
  {
-  "generic_name": "Rocuronium Bromide Injection",
-  "brand_name": null,
-  "route": "Unknown",
+  "generic_name": "Azacitidine Injection",
+  "brand_name": "AZACITIDINE",
+  "route": "INTRAVENOUS",
   "dosage_form": "Injection",
-  "therapeutic_category": "Anesthesia",
-  "suppliers_in_shortage_list": 11,
-  "risk_score": 11,
+  "therapeutic_category": "Oncology",
+  "suppliers_in_shortage_list": 9,
+  "risk_score": 10,
   "reasons": [
-   "11 makers listed for this drug (many suppliers)",
+   "9 makers listed for this drug (many suppliers)",
    "Injection dosage form (17% of these listings are discontinuation notices)",
-   "Anesthesia category (5% of these listings are discontinuation notices)"
+   "Oncology category (43% of these listings are discontinuation notices)"
   ],
-  "duration_context": "On FDA's shortage list since February 2023 (about 4 years)."
+  "duration_context": "On FDA's shortage list since December 2020 (about 6 years)."
+ },
+ {
+  "generic_name": "Carboplatin Injection",
+  "brand_name": "CARBOPLATIN",
+  "route": "INTRAVENOUS",
+  "dosage_form": "Injection",
+  "therapeutic_category": "Oncology",
+  "suppliers_in_shortage_list": 10,
+  "risk_score": 10,
+  "reasons": [
+   "10 makers listed for this drug (many suppliers)",
+   "Injection dosage form (17% of these listings are discontinuation notices)",
+   "Oncology category (43% of these listings are discontinuation notices)"
+  ],
+  "duration_context": "On FDA's shortage list since April 2023 (about 4 years)."
+ },
+ {
+  "generic_name": "Meperidine Hydrochloride Injection",
+  "brand_name": "DEMEROL",
+  "route": "INTRAMUSCULAR",
+  "dosage_form": "Injection",
+  "therapeutic_category": "Analgesia/Addiction",
+  "suppliers_in_shortage_list": 2,
+  "risk_score": 10,
+  "reasons": [
+   "2 makers listed for this drug",
+   "Injection dosage form (17% of these listings are discontinuation notices)",
+   "Analgesia/Addiction category (22% of these listings are discontinuation notices)"
+  ],
+  "duration_context": "On FDA's shortage list since May 2025 (about 1 year)."
+ },
+ {
+  "generic_name": "Methylphenidate Film, Extended Release",
+  "brand_name": "METHYLPHENIDATE TRANSDERMAL SYSTEM",
+  "route": "TRANSDERMAL",
+  "dosage_form": "Film, Extended Release",
+  "therapeutic_category": "Psychiatry",
+  "suppliers_in_shortage_list": 1,
+  "risk_score": 10,
+  "reasons": [
+   "1 maker listed for this drug (no other maker on FDA's list)",
+   "Film, Extended Release dosage form",
+   "Psychiatry category (4% of these listings are discontinuation notices)"
+  ],
+  "duration_context": "On FDA's shortage list since February 2025 (about 2 years)."
+ },
+ {
+  "generic_name": "Promethazine Hydrochloride Injection",
+  "brand_name": "PROMETHAZINE HYDROCHLORIDE",
+  "route": "INTRAMUSCULAR",
+  "dosage_form": "Injection",
+  "therapeutic_category": "Analgesia/Addiction",
+  "suppliers_in_shortage_list": 2,
+  "risk_score": 10,
+  "reasons": [
+   "2 makers listed for this drug",
+   "Injection dosage form (17% of these listings are discontinuation notices)",
+   "Analgesia/Addiction category (22% of these listings are discontinuation notices)"
+  ],
+  "duration_context": "On FDA's shortage list since November 2023 (about 3 years)."
+ },
+ {
+  "generic_name": "Cefotaxime Sodium Powder, for Solution",
+  "brand_name": "CEFOTAXIME",
+  "route": "INTRAVENOUS",
+  "dosage_form": "Powder, For Solution",
+  "therapeutic_category": "Anti-Infective",
+  "suppliers_in_shortage_list": 2,
+  "risk_score": 9,
+  "reasons": [
+   "2 makers listed for this drug",
+   "Powder, For Solution dosage form",
+   "Anti-Infective category (56% of these listings are discontinuation notices)"
+  ],
+  "duration_context": "On FDA's shortage list since February 2015 (about 12 years)."
  },
  {
   "generic_name": "Desmopressin Acetate Spray",
@@ -451,103 +556,13 @@ window.RX_DRUGS = [
   "duration_context": "On FDA's shortage list since March 2021 (about 6 years)."
  },
  {
-  "generic_name": "Methylphenidate Film, Extended Release",
-  "brand_name": "METHYLPHENIDATE TRANSDERMAL SYSTEM",
-  "route": "TRANSDERMAL",
-  "dosage_form": "Film, Extended Release",
-  "therapeutic_category": "Psychiatry",
-  "suppliers_in_shortage_list": 1,
-  "risk_score": 9,
-  "reasons": [
-   "1 maker listed for this drug (no other maker on FDA's list)",
-   "Film, Extended Release dosage form",
-   "Psychiatry category (4% of these listings are discontinuation notices)"
-  ],
-  "duration_context": "On FDA's shortage list since February 2025 (about 2 years)."
- },
- {
-  "generic_name": "Azacitidine Injection",
-  "brand_name": "AZACITIDINE",
-  "route": "INTRAVENOUS",
-  "dosage_form": "Injection",
-  "therapeutic_category": "Oncology",
-  "suppliers_in_shortage_list": 9,
-  "risk_score": 8,
-  "reasons": [
-   "9 makers listed for this drug (many suppliers)",
-   "Injection dosage form (17% of these listings are discontinuation notices)",
-   "Oncology category (43% of these listings are discontinuation notices)"
-  ],
-  "duration_context": "On FDA's shortage list since December 2020 (about 6 years)."
- },
- {
-  "generic_name": "Cefotaxime Sodium Powder, for Solution",
-  "brand_name": "CEFOTAXIME",
-  "route": "INTRAVENOUS",
-  "dosage_form": "Powder, For Solution",
-  "therapeutic_category": "Anti-Infective",
-  "suppliers_in_shortage_list": 2,
-  "risk_score": 8,
-  "reasons": [
-   "2 makers listed for this drug",
-   "Powder, For Solution dosage form",
-   "Anti-Infective category (56% of these listings are discontinuation notices)"
-  ],
-  "duration_context": "On FDA's shortage list since February 2015 (about 12 years)."
- },
- {
-  "generic_name": "Meperidine Hydrochloride Injection",
-  "brand_name": "DEMEROL",
-  "route": "INTRAMUSCULAR",
-  "dosage_form": "Injection",
-  "therapeutic_category": "Analgesia/Addiction",
-  "suppliers_in_shortage_list": 2,
-  "risk_score": 8,
-  "reasons": [
-   "2 makers listed for this drug",
-   "Injection dosage form (17% of these listings are discontinuation notices)",
-   "Analgesia/Addiction category (22% of these listings are discontinuation notices)"
-  ],
-  "duration_context": "On FDA's shortage list since May 2025 (about 1 year)."
- },
- {
-  "generic_name": "Promethazine Hydrochloride Injection",
-  "brand_name": "PROMETHAZINE HYDROCHLORIDE",
-  "route": "INTRAMUSCULAR",
-  "dosage_form": "Injection",
-  "therapeutic_category": "Analgesia/Addiction",
-  "suppliers_in_shortage_list": 2,
-  "risk_score": 8,
-  "reasons": [
-   "2 makers listed for this drug",
-   "Injection dosage form (17% of these listings are discontinuation notices)",
-   "Analgesia/Addiction category (22% of these listings are discontinuation notices)"
-  ],
-  "duration_context": "On FDA's shortage list since November 2023 (about 3 years)."
- },
- {
-  "generic_name": "Epinephrine Bitartrate, Lidocaine Hydrochloride Injection",
-  "brand_name": null,
-  "route": "Unknown",
-  "dosage_form": "Injection",
-  "therapeutic_category": "Anesthesia",
-  "suppliers_in_shortage_list": 2,
-  "risk_score": 7,
-  "reasons": [
-   "2 makers listed for this drug",
-   "Injection dosage form (17% of these listings are discontinuation notices)",
-   "Anesthesia category (5% of these listings are discontinuation notices)"
-  ],
-  "duration_context": "On FDA's shortage list since February 2012 (about 15 years)."
- },
- {
   "generic_name": "Midazolam Hydrochloride Injection",
   "brand_name": null,
   "route": "Unknown",
   "dosage_form": "Injection",
   "therapeutic_category": "Anesthesia",
   "suppliers_in_shortage_list": 6,
-  "risk_score": 6,
+  "risk_score": 8,
   "reasons": [
    "6 makers listed for this drug",
    "Injection dosage form (17% of these listings are discontinuation notices)",
@@ -562,7 +577,7 @@ window.RX_DRUGS = [
   "dosage_form": "Injection",
   "therapeutic_category": "Analgesia/Addiction",
   "suppliers_in_shortage_list": 7,
-  "risk_score": 5,
+  "risk_score": 8,
   "reasons": [
    "7 makers listed for this drug",
    "Injection dosage form (17% of these listings are discontinuation notices)",
@@ -571,19 +586,49 @@ window.RX_DRUGS = [
   "duration_context": "On FDA's shortage list since October 2017 (about 9 years)."
  },
  {
+  "generic_name": "Epinephrine Bitartrate, Lidocaine Hydrochloride Injection",
+  "brand_name": null,
+  "route": "Unknown",
+  "dosage_form": "Injection",
+  "therapeutic_category": "Anesthesia",
+  "suppliers_in_shortage_list": 2,
+  "risk_score": 6,
+  "reasons": [
+   "2 makers listed for this drug",
+   "Injection dosage form (17% of these listings are discontinuation notices)",
+   "Anesthesia category (5% of these listings are discontinuation notices)"
+  ],
+  "duration_context": "On FDA's shortage list since February 2012 (about 15 years)."
+ },
+ {
   "generic_name": "Quinapril Hydrochloride Tablet",
   "brand_name": null,
   "route": "Unknown",
   "dosage_form": "Tablet",
   "therapeutic_category": "Cardiovascular",
   "suppliers_in_shortage_list": 4,
-  "risk_score": 5,
+  "risk_score": 6,
   "reasons": [
    "4 makers listed for this drug",
    "Tablet dosage form (48% of these listings are discontinuation notices)",
    "Cardiovascular category (45% of these listings are discontinuation notices)"
   ],
   "duration_context": "On FDA's shortage list since January 2023 (about 4 years)."
+ },
+ {
+  "generic_name": "Sodium Bicarbonate Injection",
+  "brand_name": "SODIUM BICARBONATE",
+  "route": "INTRAVENOUS",
+  "dosage_form": "Injection",
+  "therapeutic_category": "Endocrinology/Metabolism",
+  "suppliers_in_shortage_list": 6,
+  "risk_score": 5,
+  "reasons": [
+   "6 makers listed for this drug",
+   "Injection dosage form (17% of these listings are discontinuation notices)",
+   "Endocrinology/Metabolism category (26% of these listings are discontinuation notices)"
+  ],
+  "duration_context": "On FDA's shortage list since March 2017 (about 10 years)."
  },
  {
   "generic_name": "Amino Acid Injection",
@@ -733,7 +778,7 @@ window.RX_DRUGS = [
    "Irrigant dosage form",
    "Gastroenterology category (34% of these listings are discontinuation notices)"
   ],
-  "duration_context": "On FDA's shortage list since April 2023 (about 3 years)."
+  "duration_context": "On FDA's shortage list since April 2023 (about 4 years)."
  },
  {
   "generic_name": "Etomidate Injection",
@@ -781,21 +826,6 @@ window.RX_DRUGS = [
   "duration_context": "On FDA's shortage list since May 2018 (about 8 years)."
  },
  {
-  "generic_name": "Sodium Bicarbonate Injection",
-  "brand_name": "SODIUM BICARBONATE",
-  "route": "INTRAVENOUS",
-  "dosage_form": "Injection",
-  "therapeutic_category": "Endocrinology/Metabolism",
-  "suppliers_in_shortage_list": 6,
-  "risk_score": 3,
-  "reasons": [
-   "6 makers listed for this drug",
-   "Injection dosage form (17% of these listings are discontinuation notices)",
-   "Endocrinology/Metabolism category (27% of these listings are discontinuation notices)"
-  ],
-  "duration_context": "On FDA's shortage list since March 2017 (about 10 years)."
- },
- {
   "generic_name": "Amphetamine Aspartate Monohydrate, Amphetamine Sulfate, Dextroamphetamine Saccharate, Dextroamphetamine Sulfate Tablet",
   "brand_name": null,
   "route": "Unknown",
@@ -826,36 +856,6 @@ window.RX_DRUGS = [
   "duration_context": "On FDA's shortage list since March 2023 (about 4 years)."
  },
  {
-  "generic_name": "Dextrose Monohydrate 10% Injection",
-  "brand_name": "DEXTROSE",
-  "route": "INTRAVENOUS",
-  "dosage_form": "Injection",
-  "therapeutic_category": "Endocrinology/Metabolism",
-  "suppliers_in_shortage_list": 4,
-  "risk_score": 2,
-  "reasons": [
-   "4 makers listed for this drug",
-   "Injection dosage form (17% of these listings are discontinuation notices)",
-   "Endocrinology/Metabolism category (27% of these listings are discontinuation notices)"
-  ],
-  "duration_context": "On FDA's shortage list since March 2022 (about 5 years)."
- },
- {
-  "generic_name": "Dextrose Monohydrate 5% Injection",
-  "brand_name": "DEXTROSE",
-  "route": "INTRAVENOUS",
-  "dosage_form": "Injection",
-  "therapeutic_category": "Endocrinology/Metabolism",
-  "suppliers_in_shortage_list": 5,
-  "risk_score": 2,
-  "reasons": [
-   "5 makers listed for this drug",
-   "Injection dosage form (17% of these listings are discontinuation notices)",
-   "Endocrinology/Metabolism category (27% of these listings are discontinuation notices)"
-  ],
-  "duration_context": "On FDA's shortage list since February 2022 (about 5 years)."
- },
- {
   "generic_name": "Dextrose Monohydrate 50% Injection",
   "brand_name": "DEXTROSE",
   "route": "INTRAVENOUS",
@@ -866,7 +866,7 @@ window.RX_DRUGS = [
   "reasons": [
    "3 makers listed for this drug",
    "Injection dosage form (17% of these listings are discontinuation notices)",
-   "Endocrinology/Metabolism category (27% of these listings are discontinuation notices)"
+   "Endocrinology/Metabolism category (26% of these listings are discontinuation notices)"
   ],
   "duration_context": "On FDA's shortage list since January 2022 (about 5 years)."
  },
@@ -881,7 +881,7 @@ window.RX_DRUGS = [
   "reasons": [
    "3 makers listed for this drug",
    "Injection dosage form (17% of these listings are discontinuation notices)",
-   "Endocrinology/Metabolism category (27% of these listings are discontinuation notices)"
+   "Endocrinology/Metabolism category (26% of these listings are discontinuation notices)"
   ],
   "duration_context": "On FDA's shortage list since October 2024 (about 2 years)."
  },
@@ -916,21 +916,6 @@ window.RX_DRUGS = [
   "duration_context": "On FDA's shortage list since July 2023 (about 3 years)."
  },
  {
-  "generic_name": "Methotrexate Sodium Injection",
-  "brand_name": "METHOTREXATE",
-  "route": "INTRAMUSCULAR",
-  "dosage_form": "Injection",
-  "therapeutic_category": "Rheumatology",
-  "suppliers_in_shortage_list": 5,
-  "risk_score": 2,
-  "reasons": [
-   "5 makers listed for this drug",
-   "Injection dosage form (17% of these listings are discontinuation notices)",
-   "Rheumatology category (22% of these listings are discontinuation notices)"
-  ],
-  "duration_context": "On FDA's shortage list since March 2023 (about 4 years)."
- },
- {
   "generic_name": "Methylphenidate Hydrochloride Tablet, Extended Release",
   "brand_name": null,
   "route": "Unknown",
@@ -944,21 +929,6 @@ window.RX_DRUGS = [
    "Psychiatry category (4% of these listings are discontinuation notices)"
   ],
   "duration_context": "On FDA's shortage list since July 2023 (about 3 years)."
- },
- {
-  "generic_name": "Sodium Acetate Injection",
-  "brand_name": "SODIUM ACETATE",
-  "route": "INTRAVENOUS",
-  "dosage_form": "Injection",
-  "therapeutic_category": "Endocrinology/Metabolism",
-  "suppliers_in_shortage_list": 5,
-  "risk_score": 2,
-  "reasons": [
-   "5 makers listed for this drug",
-   "Injection dosage form (17% of these listings are discontinuation notices)",
-   "Endocrinology/Metabolism category (27% of these listings are discontinuation notices)"
-  ],
-  "duration_context": "On FDA's shortage list since February 2016 (about 11 years)."
  },
  {
   "generic_name": "Dobutamine Hydrochloride Injection",
@@ -991,6 +961,21 @@ window.RX_DRUGS = [
   "duration_context": "On FDA's shortage list since November 2017 (about 9 years)."
  },
  {
+  "generic_name": "Methotrexate Sodium Injection",
+  "brand_name": "METHOTREXATE",
+  "route": "INTRA-ARTERIAL",
+  "dosage_form": "Injection",
+  "therapeutic_category": "Rheumatology",
+  "suppliers_in_shortage_list": 5,
+  "risk_score": 1,
+  "reasons": [
+   "5 makers listed for this drug",
+   "Injection dosage form (17% of these listings are discontinuation notices)",
+   "Rheumatology category (22% of these listings are discontinuation notices)"
+  ],
+  "duration_context": "On FDA's shortage list since March 2023 (about 4 years)."
+ },
+ {
   "generic_name": "Remifentanil Hydrochloride Injection",
   "brand_name": "REMIFENTANIL HYDROCHLORIDE",
   "route": "INTRAVENOUS",
@@ -1021,6 +1006,21 @@ window.RX_DRUGS = [
   "duration_context": "On FDA's shortage list since March 2018 (about 9 years)."
  },
  {
+  "generic_name": "Sodium Acetate Injection",
+  "brand_name": "SODIUM ACETATE",
+  "route": "INTRAVENOUS",
+  "dosage_form": "Injection",
+  "therapeutic_category": "Endocrinology/Metabolism",
+  "suppliers_in_shortage_list": 5,
+  "risk_score": 1,
+  "reasons": [
+   "5 makers listed for this drug",
+   "Injection dosage form (17% of these listings are discontinuation notices)",
+   "Endocrinology/Metabolism category (26% of these listings are discontinuation notices)"
+  ],
+  "duration_context": "On FDA's shortage list since February 2016 (about 11 years)."
+ },
+ {
   "generic_name": "Lisdexamfetamine Dimesylate Tablet, Chewable",
   "brand_name": "LISDEXAMFETAMINE DIMESYLATE",
   "route": "ORAL",
@@ -1036,4 +1036,4 @@ window.RX_DRUGS = [
   "duration_context": "On FDA's shortage list since July 2023 (about 3 years)."
  }
 ];
-window.RX_DATA_AS_OF = "2026-10-27";
+window.RX_DATA_AS_OF = "2026-10-28";
