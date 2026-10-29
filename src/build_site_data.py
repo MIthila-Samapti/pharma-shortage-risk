@@ -1,22 +1,20 @@
-"""Builds the scored dataset the RxContinuity website runs on.
+"""Builds the scored dataset the RxContinuity site runs on.
 
-Scores every currently-listed ("Current") shortage with the Phase 1
-model and attaches plain-English reasons. Writes docs/data/drugs.js - a
-plain JS file (not JSON fetched over CORS) so the static site can just
-<script src> it with no server needed, including for local file://
-preview.
+Scores every "Current" shortage with the Phase 1 model and attaches
+plain-English reasons. Writes docs/data/drugs.js as plain JS (not JSON
+fetched over CORS) so the static site can just <script src> it, no
+server needed - works for local file:// preview too.
 
-What the score is, and is not: FDA's feed mixes two kinds of record -
-drugs short right now ("Current") and notices that a company will stop
-making a product ("To Be Discontinued"). The model is trained to tell
-the two apart, so the score says how closely a current shortage
-resembles a discontinuation notice. It is not a forecast of how the
-shortage will end: one snapshot follows no listing over time.
+Score caveat worth repeating here: FDA's feed mixes current shortages
+and discontinuation notices, and the model is trained to tell them
+apart. So the score is "how much does this current shortage resemble a
+discontinuation notice," not a forecast of how it'll end - one
+snapshot doesn't track a listing over time.
 
-Re-running this script picks up the newest data/raw/fda_shortages_*.csv
-snapshot (src/fetch_shortages.py adds one whenever FDA's list changes).
-The date written to the site is the date of that snapshot - the day the
-data was actually pulled from FDA - not the day this script ran.
+Picks up the newest data/raw/fda_shortages_*.csv automatically
+(fetch_shortages.py adds a new one whenever FDA's list changes). The
+date shown on the site is the snapshot's date, not the day this script
+happened to run.
 """
 
 import json
@@ -33,9 +31,8 @@ from shortage_risk import (
 
 
 def supplier_chip(n):
-    """`suppliers_in_shortage_list` counts every maker listed for the
-    drug, including the maker of the row itself - so 1 means no other
-    maker is listed, not "one other"."""
+    # suppliers_in_shortage_list includes the row's own maker, so 1
+    # means "no other maker listed," not "one other maker"
     n = int(n)
     if n == 1:
         return "1 maker listed for this drug (no other maker on FDA's list)"
@@ -65,11 +62,11 @@ def reason_chips(row, dosage_rates, category_rates):
 
 
 def listing_age_note(first_posted, snapshot_date):
-    """One true, checkable line per drug: when FDA first posted a current
-    listing for it. Replaces an earlier "typically reach a final
-    determination within ~260 days" line, which measured how long
-    discontinuation notices stay on FDA's list (FDA removes them after a
-    year), not how long shortages last."""
+    # one checkable line: when FDA first posted this listing. used to
+    # say "typically resolves within ~260 days," but that number was
+    # measuring how long discontinuation notices stay listed before FDA
+    # removes them (1 year), not how long shortages actually last - so
+    # scrapped it for this instead
     if pd.isna(first_posted):
         return None
     years = (snapshot_date - first_posted).days / 365.25
@@ -109,8 +106,8 @@ def build(path=None):
             "duration_context": listing_age_note(first_posted.get(row["generic_name"]), snapshot_date),
         })
 
-    # de-duplicate by generic_name, keeping the highest-scoring record (a
-    # generic name can have multiple manufacturer/package rows)
+    # generic name can have multiple manufacturer/package rows - keep
+    # whichever scores highest
     by_name = {}
     for r in records:
         key = r["generic_name"]
