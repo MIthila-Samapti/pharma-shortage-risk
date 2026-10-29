@@ -1,29 +1,23 @@
-"""Download today's FDA drug shortage list and keep a dated copy.
+"""Pulls today's FDA drug shortage list and keeps a dated copy.
 
-Before this script existed, the daily job only re-scored the one
-snapshot from 2026-09-22 and re-stamped the date, so the site said
-"updated daily" while showing the same data every day. This script is
-the missing step: it pulls the live `drug/shortages` feed from openFDA
-and saves it under `data/raw/`.
+Before this existed, the daily job just re-scored the 2026-09-22
+snapshot and re-stamped the date - "updated daily" showing the same
+data every day. This is the fix: pulls the live `drug/shortages` feed
+from openFDA into `data/raw/`.
 
-Two things get written:
+Writes two things:
+- `data/raw/fda_shortages_YYYY-MM-DD.csv`, but only on days the list
+  actually changed from the last saved snapshot. Old snapshots never
+  get overwritten. The feed keeps no history of its own (an expired
+  shortage just disappears), so these files are the only record of
+  what the list looked like on a given day.
+- `data/raw/fetch_log.csv`, one line per day checked, changed or not.
 
-- `data/raw/fda_shortages_YYYY-MM-DD.csv` - a new dated snapshot, but
-  only on days when FDA's list actually differs from the newest
-  snapshot already saved. Old snapshots are never overwritten or
-  deleted. The feed itself keeps no history (a shortage that ends just
-  drops off), so these files are the only record of what the list
-  looked like on a given day.
-- `data/raw/fetch_log.csv` - one line per day the feed was checked,
-  whether or not it changed. On a day with no new snapshot file, the
-  list was identical to the snapshot named in that line.
+If the pull fails or looks off (too few records, count doesn't match
+FDA's reported total), it exits with an error and writes nothing - a
+bad day should never overwrite good data.
 
-If the download fails or looks wrong (too few records, count doesn't
-match what FDA says the total is), the script exits with an error and
-writes nothing, so a bad day can never replace good data or make the
-site claim a refresh that didn't happen.
-
-Standard library only, so it adds nothing to requirements.txt.
+Standard library only.
 """
 
 import csv
@@ -70,30 +64,22 @@ def _first(value):
 
 
 def _joined(value):
-    """All values of a list field, sorted so the order FDA happens to
-    send them in doesn't make two identical days look different."""
+    # sorted so FDA's arbitrary ordering doesn't make two identical
+    # days look like a diff
     if isinstance(value, list):
         return "; ".join(sorted(str(v) for v in value))
     return "" if value is None else str(value)
 
 
 def record_to_row(rec):
-    """Flatten one openFDA shortage record into a CSV row.
-
-    The 17 base columns follow the 2026-09-22 snapshot exactly:
-    brand/manufacturer/route/product type come from the record's
-    `openfda` block (first value), manufacturer falls back to the
-    company name when FDA attached no `openfda` block, and
-    `therapeutic_category` is the first category listed.
-
-    FDA lists several therapeutic categories for many drugs and does not
-    keep them in a consistent order, so "the first one" is partly
-    arbitrary. The full list is kept in `therapeutic_category_all`.
-
-    Every other field FDA sends (availability, contact_info,
-    change_date, resolved_note, and anything added later) is kept as an
-    extra column instead of being thrown away.
-    """
+    # flattens one openFDA record into a CSV row. the 17 base columns
+    # match the 2026-09-22 snapshot's layout: brand/manufacturer/route/
+    # product type come from the `openfda` block, manufacturer falls
+    # back to company_name when there's no openfda block, and
+    # therapeutic_category takes the first listed category (FDA doesn't
+    # keep these in a consistent order - full list saved separately in
+    # therapeutic_category_all). anything else FDA sends gets kept as
+    # an extra column rather than dropped.
     ofda = rec.get("openfda") or {}
     package = _first(rec.get("package_ndc"))
     products = ofda.get("product_ndc") or []
@@ -133,10 +119,8 @@ def record_to_row(rec):
 
 
 def rows_to_csv(rows):
-    """One CSV string for a list of rows: base columns first, then any
-    extra columns in alphabetical order, rows in a fixed sort order.
-    The fixed order is what makes "did the list change since the last
-    snapshot" a plain text comparison."""
+    # fixed column + row order so "did the list change" is just a text
+    # diff against the last snapshot
     extras = sorted({k for r in rows for k in r} - set(BASE_COLUMNS))
     columns = BASE_COLUMNS + extras
     ordered = sorted(rows, key=lambda r: [r.get(c, "") for c in
@@ -168,12 +152,9 @@ def _get_json(url):
 
 
 def fetch_all_records():
-    """Every record on the shortage feed, plus FDA's own last_updated date.
-
-    openFDA caps a request at 1,000 records, so this pages through with
-    `skip` and then checks the count against the total FDA reports.
-    An optional free API key in OPENFDA_API_KEY raises the rate limit;
-    two requests a day don't need one."""
+    # openFDA caps a request at 1000 records, so page with `skip` and
+    # verify the count against the total FDA reports. OPENFDA_API_KEY
+    # raises the rate limit if set, but a couple requests/day don't need it
     records, total, last_updated = [], None, ""
     api_key = os.environ.get("OPENFDA_API_KEY", "").strip()
     while total is None or len(records) < total:
@@ -202,7 +183,6 @@ def check_rows(rows):
 
 
 def latest_snapshot(raw_dir=RAW_DIR):
-    """(date string, path) of the newest dated snapshot, or (None, None)."""
     found = []
     if os.path.isdir(raw_dir):
         for name in os.listdir(raw_dir):
@@ -218,8 +198,8 @@ def _read_text(path):
 
 
 def save_snapshot(rows, today, raw_dir=RAW_DIR, fda_last_updated=""):
-    """Write today's snapshot if the list changed, and log the check.
-    Returns the log line that was written."""
+    # writes today's snapshot only if the list changed, logs the check
+    # either way, returns the log line written
     check_rows(rows)
     os.makedirs(raw_dir, exist_ok=True)
     text = rows_to_csv(rows)
@@ -247,7 +227,7 @@ def save_snapshot(rows, today, raw_dir=RAW_DIR, fda_last_updated=""):
         "fda_last_updated": fda_last_updated,
     }
 
-    # one line per day: a second run on the same day replaces that day's line
+    # second run same day just replaces that day's line
     log_path = os.path.join(raw_dir, LOG_NAME)
     lines = []
     if os.path.exists(log_path):
