@@ -1,4 +1,4 @@
-"""Load and clean the FDA shortage + recall snapshots."""
+"""Load + clean the FDA shortage and recall snapshots."""
 
 import os
 import re
@@ -12,16 +12,12 @@ _SNAPSHOT_NAME = re.compile(r"^fda_shortages_(\d{4}-\d{2}-\d{2})\.csv$")
 
 
 def snapshot_date_from_path(path):
-    """The date in a snapshot's file name (fda_shortages_YYYY-MM-DD.csv),
-    or None if the name doesn't carry one."""
     m = _SNAPSHOT_NAME.match(os.path.basename(str(path)))
     return pd.Timestamp(m.group(1)) if m else None
 
 
 def latest_snapshot_path(raw_dir=RAW_DIR):
-    """Path of the newest dated shortage snapshot in data/raw. The daily
-    job adds a new file whenever FDA's list changes, so "newest" is what
-    the site should show."""
+    # daily job drops a new file only when the list actually changes
     dated = sorted(n for n in os.listdir(raw_dir) if _SNAPSHOT_NAME.match(n))
     if not dated:
         raise FileNotFoundError(f"no fda_shortages_YYYY-MM-DD.csv snapshot in {raw_dir}")
@@ -30,17 +26,13 @@ def latest_snapshot_path(raw_dir=RAW_DIR):
 
 def load_shortages(path="data/raw/fda_shortages_2026-09-22.csv"):
     df = pd.read_csv(path)
-    # listing ages are measured to the day the snapshot was taken, not to
-    # a fixed date - otherwise every newer snapshot would report ages as
-    # of 2026-09-22
+    # ages measured relative to THIS snapshot's own date, not a hardcoded
+    # one, otherwise every later snapshot reports stale ages
     snapshot_date = snapshot_date_from_path(path) or SNAPSHOT_DATE
     df["initial_posting_date"] = pd.to_datetime(df["initial_posting_date"], errors="coerce")
     df["update_date"] = pd.to_datetime(df["update_date"], errors="coerce")
     df["discontinued_date"] = pd.to_datetime(df["discontinued_date"], errors="coerce")
 
-    # a handful of rows have no posting date at all - can't use them for
-    # duration/timing features, but they're still fine for the classification
-    # phase, so keep them and let downstream code decide what it needs
     df["days_since_posted"] = (snapshot_date - df["initial_posting_date"]).dt.days
 
     df["is_discontinuation"] = (df["status"] == "To Be Discontinued").astype(int)
@@ -58,12 +50,9 @@ def load_recalls(path="data/raw/fda_recalls_cder.csv"):
 
 
 def add_supplier_concentration(df):
-    """How many distinct manufacturers show up in the shortage list for the
-    same generic name. Not the same as true market sole-source status (we'd
-    need the full NDC directory for that) - this only counts suppliers that
-    are ALSO currently shortage-listed for that generic, which is a narrower
-    but still useful fragility signal: multiple suppliers of the same drug
-    struggling at once vs. just one."""
+    # distinct manufacturers shortage-listed under the same generic name.
+    # not true sole-source status (would need the full NDC directory) but
+    # close enough to be a useful fragility signal
     counts = (
         df.groupby("generic_name")["manufacturer_name"]
         .nunique()
@@ -73,9 +62,9 @@ def add_supplier_concentration(df):
 
 
 def normalize_firm_name(name):
-    """Loose normalization for matching manufacturer names across the two
-    datasets - they're never spelled identically (e.g. 'Hospira, Inc.' vs
-    'Hospira, Inc., a Pfizer Company')."""
+    # manufacturer names are never spelled the same across the two feeds
+    # ("Hospira, Inc." vs "Hospira, Inc., a Pfizer Company"), so strip the
+    # common suffixes before matching
     if not isinstance(name, str):
         return ""
     name = name.lower()
