@@ -1,37 +1,29 @@
 """Phase 3: recall overlay.
 
-The original question for this phase was whether manufacturers with a
-recent FDA recall show up more often among current shortages - the
-assumption being that recall trouble is a warning sign of a
-manufacturer struggling to keep a product on the market.
+Original question: do manufacturers with a recent FDA recall show up
+more often among current shortages, on the theory that recall trouble
+signals a manufacturer struggling to keep a product on the market?
 
-The data says the opposite. Manufacturers with any recall on record
-have a LOWER discontinuation rate than manufacturers with none (25%
-vs 32%), and it's more pronounced for recalls in the last two years
-(22% vs 35%, chi-square p < 0.0001). That's not what the original
-premise expected, so it's worth checking why before reporting it as a
-finding rather than an error.
+Data says the opposite. Manufacturers with any recall on record have a
+LOWER discontinuation rate than ones with none (25% vs 32%), more
+pronounced for recalls in the last two years (22% vs 35%, chi-square p
+< 0.0001). Worth digging into before reporting it, since it's the
+reverse of what I expected going in.
 
-The likely explanation: recall history is entangled with manufacturer
-scale. A firm shows up in the CDER recall feed mostly by having more
-products and more manufacturing volume, which also gives it more
-capacity to keep supplying a struggling product rather than
-discontinuing it outright. Manufacturers matched to a recall show up
-on a median of 42 shortage-list entries elsewhere versus 16 for
-unmatched manufacturers - a real, measurable difference in scale as
-proxied by how many products under that name are currently
-shortage-listed. Restricting to only manufacturers already at that
-larger scale (10+ shortage-list entries) shrinks the gap (30.7% vs
-23.4%) but doesn't erase it, so scale explains part of this, not all
-of it - a firm under active FDA scrutiny for a recall may also be
-under more pressure to keep supplying rather than quietly walking
-away from a product.
+Likely explanation: recall history is tangled up with manufacturer
+scale. A firm shows up in CDER's recall feed mostly by having more
+products and manufacturing volume - which also means more capacity to
+keep a struggling product on the market instead of discontinuing it.
+Recall-matched manufacturers show up on a median of 42 other
+shortage-list entries vs. 16 for unmatched ones, so there's a real
+scale difference there. Restricting to manufacturers already at that
+larger scale (10+ listings) shrinks the gap (30.7% vs 23.4%) but
+doesn't close it - scale explains part of this, not all of it.
 
-Either way, the practical finding survives: a recall on a
-manufacturer's record is not itself a red flag for that product's
-shortage turning into a permanent discontinuation - if anything it is
-mildly reassuring, and should not be read as a risk multiplier on top
-of the Phase 1 model without this caveat.
+Either way, the practical finding holds: a recall on record is not a
+red flag for a drug's shortage becoming permanent. If anything it's
+mildly reassuring. Shouldn't be stacked on top of the Phase 1 score as
+an extra risk multiplier.
 """
 
 import numpy as np
@@ -74,9 +66,8 @@ def build_overlay_dataset(
     shortages["has_recall"] = shortages["recall_count"] > 0
     shortages["has_recent_recall"] = shortages["recent_recall_count"] > 0
 
-    # scale proxy: how many shortage-list rows (any drug) carry this
-    # manufacturer's name - a stand-in for how large/diversified a
-    # manufacturer is, since that isn't otherwise in this data
+    # scale proxy - how many shortage-list rows (any drug) carry this
+    # manufacturer's name, since real size isn't otherwise in this data
     listing_counts = shortages.groupby("mfr_norm").size().rename("listing_count")
     shortages = shortages.merge(listing_counts, left_on="mfr_norm", right_index=True, how="left")
 
@@ -94,10 +85,6 @@ def overlap_summary(df):
 
 
 def discontinuation_rate_by_recall(df, recent_only=False):
-    """Compares discontinuation rate for shortage-list rows whose
-    manufacturer has (vs doesn't have) a recall on record, with a
-    chi-square test for whether the difference is real. Resolved rows
-    are excluded, same as Phase 1's classification target."""
     col = "has_recent_recall" if recent_only else "has_recall"
     sub = df[df["status"] != "Resolved"]
     rates = sub.groupby(col)["is_discontinuation"].agg(["mean", "count"])
@@ -107,10 +94,8 @@ def discontinuation_rate_by_recall(df, recent_only=False):
 
 
 def scale_check(df, min_listings=10):
-    """Does the recall/discontinuation relationship survive when
-    restricted to manufacturers already at a larger scale? If the gap
-    shrinks a lot, scale is most of the explanation; if it survives,
-    something besides scale is going on too."""
+    # does the recall/discontinuation gap survive once we only look at
+    # manufacturers already at a larger scale?
     large = df[df["listing_count"] >= min_listings]
     sub = large[large["status"] != "Resolved"]
     return sub.groupby(sub["recall_count"] > 0)["is_discontinuation"].agg(["mean", "count"])
