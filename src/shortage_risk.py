@@ -1,41 +1,30 @@
 """Phase 1: discontinuation risk classification.
 
 Among drugs already on the FDA shortage list, which features predict
-whether the entry is a permanent discontinuation ("To Be Discontinued")
-rather than an active/temporary shortage ("Current")? This is NOT a
-"will this drug go into shortage" model - we don't have a control group
-of non-shortage drugs for that. It's narrower: given a drug is already
-listed, what makes a permanent supply loss more likely.
+whether the listing is a permanent discontinuation ("To Be
+Discontinued") vs. an active/temporary shortage ("Current")? Note this
+is NOT a "will this drug go into shortage" model - there's no control
+group of non-shortage drugs for that. It's narrower: given a drug is
+already listed, what makes a permanent loss more likely.
 
-A note on methodology, kept here rather than only in the README because
-it changes how the numbers below should be read:
+Methodology note, because it changes how the numbers below should be
+read. First pass included `days_since_posted` as a feature and hit AUC
+1.000 - not a real result, FDA tends to close out "To Be Discontinued"
+paperwork faster than open-ended "Current" shortages, so the model was
+basically reading FDA's own clock, not finding a risk factor. Dropped
+it from the model (kept as a descriptive note below, see
+DESCRIPTIVE_ONLY).
 
-The first version of this model included `days_since_posted` (how long
-the entry has sat on the shortage list) as a feature and hit AUC 1.000.
-That is not a real result - `days_since_posted` is entangled with the
-label almost by definition (FDA tends to resolve the "To Be
-Discontinued" bookkeeping faster than open-ended "Current" shortages),
-so a model "predicting" discontinuation from it is closer to reading
-the FDA's own paperwork clock than finding a supply-chain risk factor.
-It's dropped from the model below and reported separately as a
-descriptive note, not a predictive feature.
-
-With `days_since_posted` removed, a plain random row split still gave
-AUC ~0.986 on categorical features alone (route, dosage form,
-therapeutic category) plus supplier concentration. That also needed a
-second look: with only ~140 unique combinations of those three
-categorical fields across ~1,600 rows, a random split lets the same
-combination appear in both train and test, so part of that 0.986 is
-the model looking up a combination it already saw rather than
-generalizing. `evaluate_grouped()` below splits by *combination*
-instead of by row - a combination in the test fold was never seen in
-training - which is the honest test of whether these fields carry
-real signal. It comes back lower (average AUC ~0.90, see
-`grouped_auc_summary()`) but still clearly informative, which is the
-finding actually worth reporting: route/dosage form/therapeutic
-category do carry a real, moderately strong, generalizable signal
-about discontinuation risk - just not the near-perfect signal the
-naive split implied.
+With that removed, a plain random split still gave AUC ~0.986 on
+route/dosage form/therapeutic category + supplier concentration alone.
+Also inflated: with only ~140 unique category combinations across
+~1,600 rows, a random split lets the same combination land in both
+train and test, so the model is partly just recognizing a combo it's
+already seen. `evaluate_grouped()` splits by combination instead - a
+combo in the test fold was never trained on - and that's the number
+that matters: mean AUC ~0.90 (see `grouped_auc_summary()`). Lower, but
+still clearly informative - real, moderately strong, generalizable
+signal, just not the near-perfect signal the naive split implied.
 """
 
 import numpy as np
@@ -52,16 +41,14 @@ from data_prep import add_supplier_concentration, load_shortages
 
 CAT_FEATURES = ["route", "dosage_form", "therapeutic_category"]
 MODEL_FEATURES = CAT_FEATURES + ["suppliers_in_shortage_list"]
-# kept out of the model on purpose - see module docstring
-DESCRIPTIVE_ONLY = ["days_since_posted"]
+DESCRIPTIVE_ONLY = ["days_since_posted"]  # kept out of the model, see docstring
 
 
 def build_dataset(path="data/raw/fda_shortages_2026-09-22.csv"):
     df = load_shortages(path)
     df = add_supplier_concentration(df)
-    # Resolved is its own small, different category (only 7 rows) - not
-    # part of the Current-vs-Discontinuation comparison this phase asks,
-    # so it's dropped here rather than forced into either class
+    # "Resolved" is its own small category (7 rows), not part of the
+    # Current-vs-Discontinuation question this phase asks
     df = df[df["status"] != "Resolved"].copy()
     for c in CAT_FEATURES:
         df[c] = df[c].fillna("Unknown")
@@ -82,8 +69,8 @@ def make_pipeline(model="gbm"):
 
 
 def evaluate(df, model="gbm", test_size=0.25, seed=0):
-    """Plain random row split. Reported for comparison only - see
-    module docstring for why this overstates true generalization."""
+    # plain random row split - inflated, see module docstring. kept
+    # around for comparison against evaluate_grouped()
     X = df[MODEL_FEATURES]
     y = df["is_discontinuation"]
     X_train, X_test, y_train, y_test = train_test_split(
@@ -100,10 +87,8 @@ def evaluate(df, model="gbm", test_size=0.25, seed=0):
 
 
 def evaluate_grouped(df, model="gbm", test_frac=0.25, seed=0):
-    """Split by categorical combination, not by row: every combination
-    in the test fold is unseen during training. This is the honest
-    estimate of whether route/dosage form/therapeutic category
-    generalize to a drug profile the model hasn't encountered before."""
+    # split by category combo, not row - every combo in the test fold
+    # is unseen during training, so this is the honest number
     rng = np.random.RandomState(seed)
     combos = df["combo"].unique().copy()
     rng.shuffle(combos)
@@ -119,19 +104,15 @@ def evaluate_grouped(df, model="gbm", test_frac=0.25, seed=0):
 
 
 def grouped_auc_summary(df, model="gbm", n_splits=5):
-    """Average + spread of the combo-grouped AUC across several
-    random combo splits, since any single split's AUC depends a lot
-    on which combinations happen to land in the test fold."""
+    # any one combo split's AUC is noisy depending on which combos land
+    # in test, so average over a few
     aucs = [evaluate_grouped(df, model=model, seed=s)[1] for s in range(n_splits)]
     return pd.Series(aucs, name="grouped_auc")
 
 
 def combo_purity(df):
-    """How many of the ~140 categorical combinations are 'pure'
-    (every row with that combination shares the same status) versus
-    'mixed'. High purity is *why* the naive random split (evaluate())
-    scores so high - it's evidence for the overlap explanation, not a
-    separate finding."""
+    # how many of the ~140 combos are "pure" (every row same status) vs
+    # mixed - high purity is why the naive split scores so high
     g = df.groupby(CAT_FEATURES)["status"].nunique()
     pure = (g == 1).sum()
     mixed = (g > 1).sum()
@@ -146,7 +127,6 @@ def combo_purity(df):
 
 
 def top_features(pipe, n=10):
-    """Feature importance for the GBM model, mapped back to readable names."""
     clf = pipe.named_steps["clf"]
     if not hasattr(clf, "feature_importances_"):
         return None
@@ -158,8 +138,6 @@ def top_features(pipe, n=10):
 
 
 def discontinuation_rate_by(df, col, min_rows=10):
-    """Descriptive table: discontinuation rate per category value, for
-    the categories with enough rows to be meaningful."""
     ct = df.groupby(col)["is_discontinuation"].agg(["mean", "count"])
     ct = ct[ct["count"] >= min_rows].sort_values("mean", ascending=False)
     ct.columns = ["discontinuation_rate", "n_rows"]
