@@ -1021,4 +1021,4 @@ window.RX_DRUGS = [
   "duration_context": "On FDA's shortage list since July 2023 (about 3 years)."
  }
 ];
-window.RX_DATA_AS_OF = "2026-11-10";
+window.RX_DATA_AS_OF = "2026-11-11";
