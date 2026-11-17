@@ -65,7 +65,8 @@ lasted. That shapes the whole approach here:
   project. So this isn't a "will drug X go into shortage" predictor - it's
   a "given a drug is already shortage-listed, what predicts whether it
   becomes a permanent discontinuation vs. a resolvable gap" model. That's a
-  narrower, honest claim.
+  narrower, honest claim. **Update, November 2026: Phase 4 below finally
+  pulls that control group.**
 
 ## Planned phases
 
@@ -79,6 +80,9 @@ lasted. That shapes the whole approach here:
 4. **Recall overlay** - cross-reference CDER recall records against the
    shortage list by manufacturer to see whether recently-recalled firms are
    over-represented among current shortages (done, see results below)
+5. **Concentration risk map** - pull the full FDA NDC directory to flag
+   drugs with only one or two labelers that are NOT yet in shortage (done,
+   see results below)
 
 ## Results so far (Phase 1: discontinuation risk)
 
@@ -177,6 +181,59 @@ doesn't erase it, so scale explains part of this, not all of it.
 Practical takeaway: a manufacturer's recall history should not be treated
 as a risk-increasing signal on top of the Phase 1 model - the data doesn't
 support that direction.
+
+## Results so far (Phase 4: concentration risk map)
+
+Live page: [Concentration risk map](https://rxcontinuity.com/risk-map.html)
+· Code: [`src/fetch_ndc_directory.py`](src/fetch_ndc_directory.py),
+[`src/concentration_map.py`](src/concentration_map.py).
+
+Every result above starts from drugs already on FDA's shortage list - there
+was never a "control group" of drugs NOT in shortage to compare against,
+because pulling the full FDA NDC (National Drug Code) directory was called
+out as out of scope above and in `data_prep.py`. This phase finally does
+that: it pulls the full directory of finished human drug products FDA has
+on file (openFDA doesn't publish a total for this endpoint, but it's
+well past the 26,000-hit point where `skip` paging stops working per
+openFDA's own pagination docs - that's why this is deep-paged with
+`search_after` instead), groups by `(generic_name, dosage_form)`, and
+counts distinct labelers per group - after collapsing obvious name
+variants of the same company (e.g. "Acme Pharma" vs. "Acme Pharma,
+Inc.").
+
+Phase 1 and Phase 2 both independently landed on supplier concentration as
+the strongest signal for how a shortage resolves - but only among drugs
+*already* in shortage. This asks the question those two couldn't: of drugs
+not currently short, which ones have the least redundancy if their one or
+two makers stopped? Those are flagged single-source (one labeler) or
+dual-source (two), and drugs already on the shortage list are excluded
+from the flagged view - that's Phase 1's job, not this one's.
+
+**Honest caveats, not just for this section but wherever the flagged list
+is shown:** "labeler" is not always "manufacturer" - the directory lists
+whoever is legally responsible for a listing, which can be a repackager
+reselling someone else's product rather than a second production line.
+Single-source is the more reliable tier on this point (least likely to
+hide a repackager pair); dual-source is next; anything above 2 isn't
+filtered for this at all. NDC listings also aren't verified as
+currently-marketed - `finished=true` and no expired `marketing_end_date`
+filter out some stale rows, but FDA doesn't guarantee every remaining
+listing is a product actually being made and sold today. And this is a
+structural fragility score, not a shortage forecast: it says "few
+alternative sources exist," not "this will go short" - a drug can sit at
+one maker for years with no problem.
+
+**Validation status:** the account this was built from can't currently
+reach `api.fda.gov` to pull live data (an account-level network setting,
+unrelated to FDA's API itself), so the fetch/grouping/flagging logic is
+proven against synthetic test fixtures shaped exactly like openFDA's
+documented schema (`tests/test_concentration_map.py`,
+`tests/test_fetch_ndc_directory.py` - 10/10 passing), not yet against a
+real pull. The daily GitHub Actions job (unaffected by that local
+restriction, since it runs on GitHub's own servers) is what will actually
+validate this against live data once merged - the numbers on the site
+should be treated as unverified until the job has run successfully at
+least once; this note will be removed once confirmed against real output.
 
 ## Tools
 

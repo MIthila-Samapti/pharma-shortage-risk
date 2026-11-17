@@ -34,10 +34,27 @@ jobs:
         working-directory: .
         run: PYTHONPATH=src python3 src/build_site_data.py
 
+      # Full NDC directory pull - much bigger (100k+ rows) and newer than
+      # the shortage-list pull above. continue-on-error so a bad day here
+      # (or FDA rate-limiting a 100+ page pull) never blocks the shortage
+      # data above, which has been running reliably since before this.
+      - name: Download full FDA NDC directory (concentration risk map)
+        continue-on-error: true
+        run: python3 src/fetch_ndc_directory.py
+
+      - name: Rebuild concentration risk map data
+        working-directory: .
+        run: |
+          if [ -f data/raw/fda_ndc_directory_latest.csv.gz ]; then
+            PYTHONPATH=src python3 src/build_concentration_data.py
+          else
+            echo "no NDC snapshot on disk yet (fetch step above failed or hasn't run) - skipping"
+          fi
+
       - name: Commit new snapshot, fetch log and site data if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/raw docs/data/drugs.js
+          git add data/raw docs/data/drugs.js docs/data/concentration.js
           git diff --cached --quiet || git commit -m "Daily FDA check ($(date -u +%Y-%m-%d))"
           git push

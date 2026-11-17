@@ -19,6 +19,13 @@ US federal government work and is public domain.
   not it changed.
 - `raw/fda_recalls_cder.csv` - CDER drug recall records (4,384 unique
   products), covering recall initiation dates from Jan 2024 through Dec 2025.
+- `raw/fda_ndc_directory_latest.csv.gz` - the full `drug/ndc` directory
+  (finished human prescription/OTC products), pulled by
+  `src/fetch_ndc_directory.py`. Unlike the shortage snapshots above, this
+  file is overwritten each run rather than kept as dated history - at
+  100k+ rows, keeping every daily copy would bloat the repo for no real
+  benefit, since only today's labeler count per drug is needed.
+- `raw/ndc_fetch_log.csv` - one line per day the NDC directory was pulled.
 
 Processed/derived files live in `processed/` and are built by the scripts in
 `src/`, not edited by hand.
